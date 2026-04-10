@@ -32,6 +32,8 @@ async function init() {
 
   setInterval(tickClock, 1000);
   setInterval(runUpdate, SUN_UPDATE_MS);
+  loadWeather();
+  setInterval(loadWeather, 30 * 60 * 1000);  // refresh every 30 min
 
   loadLiveDataInBackground();
 }
@@ -77,6 +79,7 @@ async function fetchBuildingsBackground() {
     allBuildings   = cached;
     buildingsReady = true;
     console.log(`${allBuildings.length} gebouwen uit cache`);
+    _setShadowToggleReady();
     runUpdate();
     return;
   }
@@ -87,11 +90,7 @@ async function fetchBuildingsBackground() {
       buildingsReady = true;
       cacheSet(CACHE_KEY_BUILDINGS, buildings);
       console.log(`${allBuildings.length} gebouwen geladen`);
-      // Enable shadow toggle label now that buildings are available
-      const shadowText = document.getElementById('shadow-toggle-text');
-      if (shadowText) shadowText.textContent = 'Toon zonschaduwen';
-      const shadowWrap = document.getElementById('shadow-toggle-wrap');
-      if (shadowWrap) shadowWrap.removeAttribute('title');
+      _setShadowToggleReady();
       runUpdate();
     }
   } catch (err) {
@@ -206,6 +205,54 @@ function mergeBars(primary, manual) {
     if (!dup) result.push({ ...m, source: m.source || 'manual' });
   }
   return result;
+}
+
+// ─── Shadow toggle helper ──────────────────────────────────────────────────
+
+function _setShadowToggleReady() {
+  const el = document.getElementById('shadow-toggle-text');
+  if (el) el.textContent = 'Toon zonschaduwen';
+  const wrap = document.getElementById('shadow-toggle-wrap');
+  if (wrap) wrap.removeAttribute('title');
+}
+
+// ─── Weather ───────────────────────────────────────────────────────────────
+
+const WEATHER_CODE_LABEL = {
+  0:  ['☀️', 'Helder'],
+  1:  ['🌤', 'Overwegend helder'],
+  2:  ['⛅', 'Deels bewolkt'],
+  3:  ['☁️', 'Bewolkt'],
+  45: ['🌫', 'Mist'],  48: ['🌫', 'IJsmist'],
+  51: ['🌦', 'Lichte motregen'], 53: ['🌦', 'Motregen'], 55: ['🌧', 'Zware motregen'],
+  61: ['🌧', 'Lichte regen'],    63: ['🌧', 'Regen'],    65: ['🌧', 'Zware regen'],
+  71: ['❄️', 'Lichte sneeuw'],   73: ['❄️', 'Sneeuw'],   75: ['❄️', 'Zware sneeuw'],
+  80: ['🌦', 'Regenbuien'],      81: ['🌦', 'Regenbuien'], 82: ['⛈', 'Zware buien'],
+  95: ['⛈', 'Onweer'],          96: ['⛈', 'Onweer met hagel'],
+};
+
+async function loadWeather() {
+  try {
+    const url = 'https://api.open-meteo.com/v1/forecast' +
+      '?latitude=51.028&longitude=4.480' +
+      '&current=temperature_2m,weather_code,wind_speed_10m' +
+      '&wind_speed_unit=kmh&timezone=Europe%2FBrussels&forecast_days=1';
+    const res = await fetch(url);
+    if (!res.ok) return;
+    const data = await res.json();
+    const c = data.current;
+    _renderWeather(c.temperature_2m, c.weather_code, c.wind_speed_10m);
+  } catch { /* silent fail — weather is optional */ }
+}
+
+function _renderWeather(tempC, code, windKmh) {
+  const el = document.getElementById('weather-info');
+  if (!el) return;
+  const [icon, label] = WEATHER_CODE_LABEL[code] ?? ['🌡', 'Onbekend'];
+  const temp = typeof tempC === 'number' ? Math.round(tempC) + '°C' : '--';
+  const wind = typeof windKmh === 'number' ? Math.round(windKmh) + ' km/h' : '';
+  el.innerHTML = `${icon} ${label} · ${temp}${wind ? ' · 💨 ' + wind : ''}`;
+  el.style.display = '';
 }
 
 // ─── UI helpers ────────────────────────────────────────────────────────────

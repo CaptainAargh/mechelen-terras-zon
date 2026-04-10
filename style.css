@@ -119,6 +119,13 @@ html, body {
   margin-bottom: 4px;
 }
 
+/* Weather */
+#weather-info {
+  font-size: .82rem;
+  color: var(--text);
+  margin: 4px 0 2px;
+}
+
 /* Bar counts */
 #bar-counts {
   font-size: .8rem;

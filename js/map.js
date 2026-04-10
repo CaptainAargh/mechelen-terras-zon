@@ -22,9 +22,13 @@ function initMap() {
 
   map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'bottom-right');
   map.on('load', _onMapLoad);
-  // Silence "image not found" warnings from the OpenFreeMap liberty style sprite
-  map.on('styleimagemissing', id => {
-    map.addImage(id, { width: 1, height: 1, data: new Uint8Array(4) });
+  // Silence "image not found" warnings from the OpenFreeMap liberty style sprite.
+  // The event object has an `.id` field — the raw event was mistakenly used before.
+  map.on('styleimagemissing', e => {
+    const imgId = e.id;
+    if (imgId && !map.hasImage(imgId)) {
+      map.addImage(imgId, { width: 1, height: 1, data: new Uint8ClampedArray(4) });
+    }
   });
 }
 
