@@ -1,0 +1,357 @@
+/* ─── Reset & base ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --sun:     #FFB800;
+  --sun-glow:#FF8C00;
+  --shade:   #6B7A9F;
+  --bg:      #1a1d2e;
+  --panel:   #22263a;
+  --panel2:  #2c3150;
+  --text:    #e8eaf6;
+  --muted:   #8891b4;
+  --accent:  #FFB800;
+  --radius:  12px;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+}
+
+/* ─── Layout ───────────────────────────────────────────── */
+#map {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+#panel {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 1000;
+  width: 300px;
+  background: var(--panel);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ─── Panel header ─────────────────────────────────────── */
+#panel-header {
+  background: var(--panel2);
+  padding: 16px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+#brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#brand-icon {
+  font-size: 2rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 8px rgba(255,184,0,.6));
+}
+
+#brand-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+#brand-sub {
+  font-size: .75rem;
+  color: var(--sun);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+/* ─── Panel body ───────────────────────────────────────── */
+#panel-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Time */
+#time-block {
+  text-align: center;
+}
+
+#current-time {
+  font-size: 2rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  letter-spacing: .04em;
+}
+
+#current-date {
+  font-size: .8rem;
+  color: var(--muted);
+  text-transform: capitalize;
+  margin-top: 2px;
+}
+
+/* Sun info */
+#sun-block {
+  background: var(--panel2);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+
+#sun-info {
+  font-size: .9rem;
+  color: var(--sun);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.count-label {
+  font-size: .8rem;
+  color: var(--muted);
+}
+
+/* Controls */
+#controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: .85rem;
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-label input[type="checkbox"] {
+  display: none;
+}
+
+.toggle-track {
+  flex-shrink: 0;
+  width: 36px;
+  height: 20px;
+  background: var(--shade);
+  border-radius: 10px;
+  position: relative;
+  transition: background .2s;
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform .2s;
+}
+
+.toggle-label input:checked + .toggle-track {
+  background: var(--sun);
+}
+
+.toggle-label input:checked + .toggle-track .toggle-thumb {
+  transform: translateX(16px);
+}
+
+/* Last updated */
+#last-updated {
+  font-size: .72rem;
+  color: var(--muted);
+  text-align: right;
+}
+
+/* ─── Panel footer ─────────────────────────────────────── */
+#panel-footer {
+  padding: 10px 16px;
+  border-top: 1px solid rgba(255,255,255,.06);
+  font-size: .7rem;
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+#panel-footer a {
+  color: var(--sun);
+  text-decoration: none;
+}
+
+/* ─── Loading overlay ──────────────────────────────────── */
+#loading {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(26,29,46,.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.loading-inner {
+  text-align: center;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(255,184,0,.2);
+  border-top-color: var(--sun);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+#loading-text {
+  font-size: .9rem;
+  color: var(--muted);
+}
+
+/* ─── Error banner ─────────────────────────────────────── */
+#error {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  background: #c0392b;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: .9rem;
+  max-width: 90vw;
+  text-align: center;
+}
+
+/* ─── Leaflet map overrides ────────────────────────────── */
+.leaflet-container {
+  background: #1a1d2e;
+}
+
+/* Popup styles */
+.bar-popup .leaflet-popup-content-wrapper {
+  background: var(--panel);
+  color: var(--text);
+  border-radius: var(--radius);
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+}
+
+.bar-popup .leaflet-popup-tip {
+  background: var(--panel);
+}
+
+.bar-popup .leaflet-popup-content {
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.popup {
+  padding: 14px 16px;
+  min-width: 180px;
+}
+
+.popup h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.status-sun {
+  display: inline-block;
+  background: rgba(255,184,0,.15);
+  color: var(--sun);
+  font-size: .8rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.status-shade {
+  display: inline-block;
+  background: rgba(107,122,159,.15);
+  color: var(--shade);
+  font-size: .8rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.status-night {
+  display: inline-block;
+  background: rgba(100,100,150,.15);
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.popup .address,
+.popup .hours,
+.popup .phone {
+  font-size: .78rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.popup .website {
+  margin-top: 6px;
+  font-size: .78rem;
+}
+
+.popup .website a {
+  color: var(--sun);
+  text-decoration: none;
+}
+
+/* ─── Sunny marker glow ────────────────────────────────── */
+.marker-sunny {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(255,184,0,.6)); }
+  50%       { filter: drop-shadow(0 0 12px rgba(255,184,0,.9)); }
+}
+
+/* ─── Mobile layout ────────────────────────────────────── */
+@media (max-width: 600px) {
+  #panel {
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    border-radius: var(--radius) var(--radius) 0 0;
+    max-height: 55vh;
+    overflow-y: auto;
+  }
+}

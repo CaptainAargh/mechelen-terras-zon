@@ -1,0 +1,47 @@
+[
+  {
+    "id": "manual_de_gouden_vis",
+    "name": "De Gouden Vis",
+    "lat": 51.0264,
+    "lon": 4.4800,
+    "amenity": "bar",
+    "address": "Haverwerf, Mechelen",
+    "source": "manual"
+  },
+  {
+    "id": "manual_de_mixx",
+    "name": "De Mixx",
+    "lat": 51.0261,
+    "lon": 4.4783,
+    "amenity": "bar",
+    "address": "Grote Markt, Mechelen",
+    "source": "manual"
+  },
+  {
+    "id": "manual_cafe_century",
+    "name": "Café Century",
+    "lat": 51.0259,
+    "lon": 4.4779,
+    "amenity": "cafe",
+    "address": "Grote Markt 1, Mechelen",
+    "source": "manual"
+  },
+  {
+    "id": "manual_den_anker",
+    "name": "Den Anker",
+    "lat": 51.0268,
+    "lon": 4.4806,
+    "amenity": "bar",
+    "address": "Haverwerf 1, Mechelen",
+    "source": "manual"
+  },
+  {
+    "id": "manual_de_vagant",
+    "name": "De Vagant",
+    "lat": 51.0255,
+    "lon": 4.4775,
+    "amenity": "bar",
+    "address": "IJzerenleen, Mechelen",
+    "source": "manual"
+  }
+]
