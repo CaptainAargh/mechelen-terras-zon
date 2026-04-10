@@ -2,12 +2,13 @@
 
 const CACHE_KEY_BARS      = 'mtz_bars_v3';
 const CACHE_KEY_BUILDINGS = 'mtz_buildings_v3';
-const CACHE_DURATION_MS   = 30 * 60 * 1000; // 30 min
-const SUN_UPDATE_MS       = 5 * 60 * 1000;  // 5 min
+const CACHE_DURATION_MS   = 30 * 60 * 1000;
+const SUN_UPDATE_MS       = 5 * 60 * 1000;
 
 let allBars        = [];
 let allBuildings   = [];
 let buildingsReady = false;
+let openFilter     = 'all'; // 'all' | 'open'
 
 // ─── Init ──────────────────────────────────────────────────────────────────
 
@@ -75,7 +76,6 @@ async function fetchBuildingsBackground() {
     runUpdate();
     return;
   }
-
   try {
     const buildings = await fetchBuildings();
     if (buildings && buildings.length > 0) {
@@ -84,23 +84,23 @@ async function fetchBuildingsBackground() {
       cacheSet(CACHE_KEY_BUILDINGS, buildings);
       console.log(`${allBuildings.length} gebouwen geladen`);
       runUpdate();
-    } else {
-      console.warn('Gebouwen niet beschikbaar — schaduw wordt overgeslagen');
     }
   } catch (err) {
     console.warn('Gebouwen ophalen mislukt:', err.message);
   }
 }
 
-// ─── Update loop ───────────────────────────────────────────────────────────
+// ─── Filters ───────────────────────────────────────────────────────────────
 
 function getFilters() {
   return {
-    onlySunny:    document.getElementById('filter-sunny').checked,
-    onlyOpen:     document.getElementById('filter-open').checked,
+    onlySunny:     document.getElementById('filter-sunny').checked,
+    onlyOpen:      openFilter === 'open',
     minConfidence: parseInt(document.getElementById('filter-confidence').value, 10),
   };
 }
+
+// ─── Update loop ───────────────────────────────────────────────────────────
 
 function runUpdate() {
   const now    = new Date();
@@ -122,9 +122,46 @@ function runUpdate() {
 
   const { sunnyCount, shownCount } = updateBarMarkers(allBars, f);
   updateInfoPanel(sunPos, sunnyCount, shownCount, now);
+  updateSunCompass(sunPos);
 
   document.getElementById('last-updated').textContent =
     `Bijgewerkt om ${now.toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit' })}`;
+}
+
+// ─── Sun compass ───────────────────────────────────────────────────────────
+
+function updateSunCompass(sunPos) {
+  const dot   = document.getElementById('sun-dot');
+  const label = document.getElementById('sun-compass-label');
+  if (!dot || !label) return;
+
+  if (!sunPos.isUp) {
+    // Night: place moon in centre
+    dot.className = 'is-night';
+    dot.style.left = '50%';
+    dot.style.top  = '50%';
+    label.textContent = '🌙 Nacht';
+    return;
+  }
+
+  dot.className = '';
+
+  // Convert bearing (compass, 0=N) + altitude to x,y inside the 100×100 inner circle.
+  // r=1 at horizon, r=0 at zenith.
+  // Centre of inner element = (50px, 50px). Usable radius = 42px.
+  const altRad     = sunPos.altitude;            // radians
+  const bearingRad = (sunPos.bearing * Math.PI) / 180;
+  const r          = Math.cos(altRad);           // 1 at horizon, 0 at zenith
+  const RADIUS_PX  = 42;
+
+  const x = 50 + r * Math.sin(bearingRad) * RADIUS_PX;  // sin for E-W
+  const y = 50 - r * Math.cos(bearingRad) * RADIUS_PX;  // cos for N-S, inverted Y
+
+  dot.style.left = `${x}px`;
+  dot.style.top  = `${y}px`;
+
+  const dir = bearingToLabel(sunPos.bearing);
+  label.textContent = `${dir} · ${Math.round(sunPos.altitudeDeg)}° hoogte`;
 }
 
 // ─── Data helpers ──────────────────────────────────────────────────────────
@@ -134,7 +171,6 @@ async function loadManualBars() {
     const res = await fetch('data/bars.json');
     if (!res.ok) return [];
     const arr = await res.json();
-    // Ensure manual bars have a terrace confidence field
     return arr.map(b => ({
       ...b,
       terrace: b.terrace || (b.amenity === 'bar' || b.amenity === 'pub' ? 'likely' : 'maybe'),
@@ -162,7 +198,7 @@ function mergeBars(primary, manual) {
   return result;
 }
 
-// ─── UI ────────────────────────────────────────────────────────────────────
+// ─── UI helpers ────────────────────────────────────────────────────────────
 
 function tickClock() {
   const el = document.getElementById('current-time');
@@ -184,8 +220,7 @@ function updateInfoPanel(sunPos, sunnyCount, shownCount, now) {
     sunInfoEl.style.color = '';
   }
 
-  // Bar counts block
-  const total   = allBars.length;
+  const total       = allBars.length;
   const yesCount    = allBars.filter(b => b.terrace === 'yes').length;
   const likelyCount = allBars.filter(b => b.terrace === 'likely').length;
   const maybeCount  = allBars.filter(b => b.terrace === 'maybe').length;
@@ -212,17 +247,13 @@ function showLoading(show, text) {
   if (text) { const t = document.getElementById('loading-text'); if (t) t.textContent = text; }
 }
 
-// ─── Slider fill update ────────────────────────────────────────────────────
-
 function updateSliderFill() {
   const slider = document.getElementById('filter-confidence');
-  const pct = (parseInt(slider.value, 10) / 3) * 100;
-  slider.style.setProperty('--pct', pct + '%');
-
-  // Update label highlights
+  const val = parseInt(slider.value, 10);
+  slider.style.setProperty('--pct', (val / 3 * 100) + '%');
   document.querySelectorAll('#confidence-labels span').forEach((el, i) => {
-    el.style.color = i === parseInt(slider.value, 10) ? 'var(--sun)' : '';
-    el.style.fontWeight = i === parseInt(slider.value, 10) ? '700' : '';
+    el.style.color      = i === val ? 'var(--sun)' : '';
+    el.style.fontWeight = i === val ? '700' : '';
   });
 }
 
@@ -250,15 +281,21 @@ document.addEventListener('DOMContentLoaded', () => {
   updateSliderFill();
   init();
 
-  const refilter = () => {
-    updateSliderFill();
-    runUpdate();
-  };
+  const refilter = () => { updateSliderFill(); runUpdate(); };
 
   document.getElementById('filter-confidence').addEventListener('input', refilter);
   document.getElementById('filter-sunny').addEventListener('change', refilter);
-  document.getElementById('filter-open').addEventListener('change', refilter);
   document.getElementById('show-buildings').addEventListener('change', e => {
     toggleBuildings(e.target.checked);
+  });
+
+  // Open/all pill buttons
+  document.querySelectorAll('.pill[data-open]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      openFilter = btn.dataset.open;
+      document.querySelectorAll('.pill[data-open]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      runUpdate();
+    });
   });
 });

@@ -128,6 +128,37 @@ html, body {
 
 #bar-counts .count-sunny { color: var(--sun); font-weight: 600; }
 
+/* ─── Open/all pill filter ─────────────────────────────── */
+#open-filter-pills {
+  display: flex;
+  gap: 6px;
+}
+
+.pill {
+  flex: 1;
+  padding: 7px 10px;
+  border: 1.5px solid rgba(255,255,255,.12);
+  border-radius: 20px;
+  background: transparent;
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  font-family: inherit;
+}
+
+.pill:hover {
+  border-color: rgba(255,255,255,.25);
+  color: var(--text);
+}
+
+.pill.active {
+  background: var(--sun);
+  border-color: var(--sun);
+  color: #1a1d2e;
+}
+
 /* Confidence slider */
 .filter-group {
   background: var(--panel2);
@@ -413,6 +444,101 @@ html, body {
 }
 
 /* Sunny glow is animated via requestAnimationFrame in map.js */
+
+/* ─── Sun compass overlay ──────────────────────────────── */
+#sun-compass {
+  position: fixed;
+  bottom: 120px;   /* above MapLibre navigation controls */
+  right: 16px;
+  z-index: 1000;
+  background: var(--panel);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 20px rgba(0,0,0,.5);
+  padding: 10px;
+  width: 120px;
+  user-select: none;
+}
+
+#sun-compass-inner {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+}
+
+/* Faint compass ring */
+#sun-compass-inner::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.12);
+}
+/* Second ring at ~50% radius */
+#sun-compass-inner::after {
+  content: '';
+  position: absolute;
+  inset: 28px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255,255,255,.07);
+}
+
+.compass-label {
+  position: absolute;
+  font-size: .6rem;
+  font-weight: 700;
+  color: var(--muted);
+  line-height: 1;
+}
+.compass-label.n { top: 0;     left: 50%; transform: translateX(-50%); }
+.compass-label.s { bottom: 0;  left: 50%; transform: translateX(-50%); }
+.compass-label.e { right: 0;   top: 50%;  transform: translateY(-50%); }
+.compass-label.w { left: 0;    top: 50%;  transform: translateY(-50%); }
+
+/* Centre dot */
+#sun-compass-center-dot {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.2);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Sun icon – positioned dynamically via JS */
+#sun-dot {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 0 4px rgba(255,184,0,.7));
+  transition: left .8s ease, top .8s ease;
+}
+
+/* Night moon icon */
+#sun-dot.is-night svg { display: none; }
+#sun-dot.is-night::after {
+  content: '🌙';
+  font-size: 18px;
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#sun-compass-footer {
+  text-align: center;
+  margin-top: 6px;
+  border-top: 1px solid rgba(255,255,255,.06);
+  padding-top: 6px;
+}
+
+#sun-compass-label {
+  font-size: .68rem;
+  color: var(--sun);
+  font-weight: 600;
+}
 
 /* ─── Mobile layout ────────────────────────────────────── */
 @media (max-width: 600px) {

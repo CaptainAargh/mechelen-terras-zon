@@ -39,6 +39,15 @@
         <div id="bar-counts"></div>
       </div>
 
+      <!-- Open / all bars toggle — prominent pill buttons -->
+      <div class="filter-group">
+        <div class="filter-label">Openingstijden</div>
+        <div id="open-filter-pills">
+          <button class="pill active" data-open="all">Alle bars</button>
+          <button class="pill" data-open="open">Nu open</button>
+        </div>
+      </div>
+
       <!-- Terrace confidence filter -->
       <div class="filter-group">
         <div class="filter-label">Terras zekerheid</div>
@@ -60,11 +69,6 @@
           Alleen terrassen in de zon
         </label>
         <label class="toggle-label">
-          <input type="checkbox" id="filter-open" />
-          <span class="toggle-track"><span class="toggle-thumb"></span></span>
-          Alleen open terrassen
-        </label>
-        <label class="toggle-label">
           <input type="checkbox" id="show-buildings" />
           <span class="toggle-track"><span class="toggle-thumb"></span></span>
           Toon gebouwen
@@ -81,6 +85,35 @@
   </div>
 
   <div id="map"></div>
+
+  <!-- Sun compass overlay on the map -->
+  <div id="sun-compass">
+    <div id="sun-compass-inner">
+      <span class="compass-label n">N</span>
+      <span class="compass-label e">O</span>
+      <span class="compass-label s">Z</span>
+      <span class="compass-label w">W</span>
+      <div id="sun-dot">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="5" fill="#FFB800"/>
+          <g stroke="#FFB800" stroke-width="2" stroke-linecap="round">
+            <line x1="12" y1="2"  x2="12" y2="5"/>
+            <line x1="12" y1="19" x2="12" y2="22"/>
+            <line x1="2"  y1="12" x2="5"  y2="12"/>
+            <line x1="19" y1="12" x2="22" y2="12"/>
+            <line x1="4.93" y1="4.93"  x2="6.93" y2="6.93"/>
+            <line x1="17.07" y1="17.07" x2="19.07" y2="19.07"/>
+            <line x1="4.93" y1="19.07" x2="6.93" y2="17.07"/>
+            <line x1="17.07" y1="6.93"  x2="19.07" y2="4.93"/>
+          </g>
+        </svg>
+      </div>
+      <div id="sun-compass-center-dot"></div>
+    </div>
+    <div id="sun-compass-footer">
+      <span id="sun-compass-label">-- · --°</span>
+    </div>
+  </div>
 
   <div id="loading">
     <div class="loading-inner">
