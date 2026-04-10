@@ -116,9 +116,12 @@ function runUpdate() {
   const now    = new Date();
   const sunPos = getSunPosition(now);
   const onlySunny = document.getElementById('filter-sunny').checked;
+  const onlyOpen  = document.getElementById('filter-open').checked;
 
   for (const bar of allBars) {
     bar._isNight = !sunPos.isUp;
+    bar.isOpen   = isOpenNow(bar.opening_hours || null, now);
+
     if (!sunPos.isUp) {
       bar.inSun = false;
     } else if (buildingsReady) {
@@ -128,7 +131,7 @@ function runUpdate() {
     }
   }
 
-  const sunnyCount = updateBarMarkers(allBars, onlySunny);
+  const sunnyCount = updateBarMarkers(allBars, onlySunny, onlyOpen);
   updateInfoPanel(sunPos, sunnyCount, now);
 
   document.getElementById('last-updated').textContent =
@@ -244,9 +247,14 @@ function cacheSet(key, data) {
 document.addEventListener('DOMContentLoaded', () => {
   init();
 
-  document.getElementById('filter-sunny').addEventListener('change', () => {
-    updateBarMarkers(allBars, document.getElementById('filter-sunny').checked);
-  });
+  const refilter = () => updateBarMarkers(
+    allBars,
+    document.getElementById('filter-sunny').checked,
+    document.getElementById('filter-open').checked
+  );
+
+  document.getElementById('filter-sunny').addEventListener('change', refilter);
+  document.getElementById('filter-open').addEventListener('change', refilter);
 
   document.getElementById('show-buildings').addEventListener('change', e => {
     toggleBuildings(e.target.checked);

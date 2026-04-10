@@ -37,13 +37,16 @@ function initMap() {
  * @param {boolean} onlySunny – if true, hide shaded bars
  * @returns {number} sunnyCount
  */
-function updateBarMarkers(bars, onlySunny) {
+function updateBarMarkers(bars, onlySunny, onlyOpen) {
   barLayerGroup.clearLayers();
 
   let sunnyCount = 0;
 
   for (const bar of bars) {
     if (onlySunny && !bar.inSun) continue;
+    // "filter open": hide bars that are definitely closed (isOpen===false)
+    // bars with isOpen===null (unknown) are still shown
+    if (onlyOpen && bar.isOpen === false) continue;
 
     const marker = createBarMarker(bar);
     marker.addTo(barLayerGroup);
@@ -124,7 +127,10 @@ function buildPopupHtml(bar) {
     <p class="address">${amenityLabel}${bar.address ? ' · ' + escapeHtml(bar.address) : ''}</p>`;
 
   if (bar.opening_hours) {
-    html += `<p class="hours">🕐 ${escapeHtml(bar.opening_hours)}</p>`;
+    const openStatus = openLabel(bar.isOpen, bar.opening_hours);
+    html += `<p class="hours">${openStatus} · ${escapeHtml(bar.opening_hours)}</p>`;
+  } else {
+    html += `<p class="hours">🕐 Openingsuren onbekend</p>`;
   }
   if (bar.phone) {
     html += `<p class="phone">📞 ${escapeHtml(bar.phone)}</p>`;
