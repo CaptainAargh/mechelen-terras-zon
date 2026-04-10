@@ -7,9 +7,9 @@ const OVERPASS_MIRRORS = [
   'https://overpass.openstreetmap.ru/api/interpreter',
 ];
 
-// Bounding box: covers Mechelen city centre
+// Bounding box: covers Mechelen city centre + near surroundings
 // south, west, north, east
-const BBOX      = '51.016,4.465,51.035,4.490';
+const BBOX      = '51.010,4.460,51.040,4.500';
 // Tighter box for buildings (expensive query — smaller area = faster)
 const BBOX_BLDG = '51.024,4.474,51.031,4.488';
 
@@ -48,10 +48,12 @@ async function overpassFetch(query, timeoutMs = 20000) {
  * Returns parsed bar array, or null if all mirrors failed.
  */
 async function fetchBarsWithTerraces() {
+  // No outdoor_seating filter — OSM tagging is too sparse in Mechelen.
+  // We fetch all bars/pubs/cafes and assume they may have a terrace.
   const query = `[out:json][timeout:25];
 (
-  node["amenity"~"bar|pub|cafe"]["outdoor_seating"="yes"](${BBOX});
-  way["amenity"~"bar|pub|cafe"]["outdoor_seating"="yes"](${BBOX});
+  node["amenity"~"bar|pub|cafe"](${BBOX});
+  way["amenity"~"bar|pub|cafe"](${BBOX});
 );
 out body geom;`;
 

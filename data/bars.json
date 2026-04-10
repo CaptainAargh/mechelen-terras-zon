@@ -1,47 +1,184 @@
 [
   {
+    "id": "manual_den_anker",
+    "name": "Den Anker",
+    "lat": 51.02683,
+    "lon": 4.48058,
+    "amenity": "bar",
+    "address": "Haverwerf 1, Mechelen",
+    "website": "https://www.denanker.be",
+    "source": "manual"
+  },
+  {
     "id": "manual_de_gouden_vis",
     "name": "De Gouden Vis",
-    "lat": 51.0264,
-    "lon": 4.4800,
+    "lat": 51.02664,
+    "lon": 4.48012,
     "amenity": "bar",
-    "address": "Haverwerf, Mechelen",
+    "address": "Haverwerf 15, Mechelen",
+    "source": "manual"
+  },
+  {
+    "id": "manual_cafe_rubens",
+    "name": "Café Rubens",
+    "lat": 51.02568,
+    "lon": 4.47792,
+    "amenity": "cafe",
+    "address": "Grote Markt 8, Mechelen",
+    "source": "manual"
+  },
+  {
+    "id": "manual_dhoogh",
+    "name": "d'Hoogh",
+    "lat": 51.02560,
+    "lon": 4.47750,
+    "amenity": "bar",
+    "address": "Grote Markt 19, Mechelen",
     "source": "manual"
   },
   {
     "id": "manual_de_mixx",
     "name": "De Mixx",
-    "lat": 51.0261,
-    "lon": 4.4783,
+    "lat": 51.02580,
+    "lon": 4.47820,
     "amenity": "bar",
-    "address": "Grote Markt, Mechelen",
+    "address": "Grote Markt 5, Mechelen",
     "source": "manual"
   },
   {
     "id": "manual_cafe_century",
     "name": "Café Century",
-    "lat": 51.0259,
-    "lon": 4.4779,
+    "lat": 51.02555,
+    "lon": 4.47760,
     "amenity": "cafe",
-    "address": "Grote Markt 1, Mechelen",
-    "source": "manual"
-  },
-  {
-    "id": "manual_den_anker",
-    "name": "Den Anker",
-    "lat": 51.0268,
-    "lon": 4.4806,
-    "amenity": "bar",
-    "address": "Haverwerf 1, Mechelen",
+    "address": "Grote Markt 22, Mechelen",
     "source": "manual"
   },
   {
     "id": "manual_de_vagant",
     "name": "De Vagant",
-    "lat": 51.0255,
-    "lon": 4.4775,
+    "lat": 51.02590,
+    "lon": 4.47840,
     "amenity": "bar",
-    "address": "IJzerenleen, Mechelen",
+    "address": "Grote Markt, Mechelen",
+    "source": "manual"
+  },
+  {
+    "id": "manual_zot_kapittel",
+    "name": "In 't Zot Kapittel",
+    "lat": 51.02512,
+    "lon": 4.47720,
+    "amenity": "bar",
+    "address": "Befferstraat 4, Mechelen",
+    "source": "manual"
+  },
+  {
+    "id": "manual_het_anker",
+    "name": "Het Anker Brouwerij",
+    "lat": 51.02910,
+    "lon": 4.47730,
+    "amenity": "bar",
+    "address": "Guido Gezellelaan 49, Mechelen",
+    "website": "https://www.hetanker.be",
+    "source": "manual"
+  },
+  {
+    "id": "manual_de_pelikaan",
+    "name": "De Pelikaan",
+    "lat": 51.02540,
+    "lon": 4.47680,
+    "amenity": "bar",
+    "address": "Befferstraat, Mechelen",
+    "source": "manual"
+  },
+  {
+    "id": "manual_cafe_flora",
+    "name": "Café Flora",
+    "lat": 51.02530,
+    "lon": 4.47650,
+    "amenity": "cafe",
+    "address": "Bruul, Mechelen",
+    "source": "manual"
+  },
+  {
+    "id": "manual_de_veurn",
+    "name": "De Veurn",
+    "lat": 51.02620,
+    "lon": 4.47630,
+    "amenity": "bar",
+    "address": "Veurnstraat, Mechelen",
+    "source": "manual"
+  },
+  {
+    "id": "manual_het_ros_beiaard",
+    "name": "Het Ros Beiaard",
+    "lat": 51.02498,
+    "lon": 4.47802,
+    "amenity": "bar",
+    "address": "Befferstraat 1, Mechelen",
+    "source": "manual"
+  },
+  {
+    "id": "manual_de_wapper",
+    "name": "De Wapper",
+    "lat": 51.02610,
+    "lon": 4.47900,
+    "amenity": "bar",
+    "address": "Wapper, Mechelen",
+    "source": "manual"
+  },
+  {
+    "id": "manual_oude_vismijn",
+    "name": "Oude Vismijn",
+    "lat": 51.02650,
+    "lon": 4.47980,
+    "amenity": "bar",
+    "address": "Vismarkt, Mechelen",
+    "source": "manual"
+  },
+  {
+    "id": "manual_de_nekker",
+    "name": "De Nekker",
+    "lat": 51.02500,
+    "lon": 4.47900,
+    "amenity": "cafe",
+    "address": "Keizerstraat, Mechelen",
+    "source": "manual"
+  },
+  {
+    "id": "manual_de_linde",
+    "name": "De Linde",
+    "lat": 51.02450,
+    "lon": 4.47850,
+    "amenity": "bar",
+    "address": "Onze-Lieve-Vrouwestraat, Mechelen",
+    "source": "manual"
+  },
+  {
+    "id": "manual_bar_boulevard",
+    "name": "Bar Boulevard",
+    "lat": 51.02700,
+    "lon": 4.47700,
+    "amenity": "bar",
+    "address": "Bruul, Mechelen",
+    "source": "manual"
+  },
+  {
+    "id": "manual_cafe_de_zwaan",
+    "name": "Café De Zwaan",
+    "lat": 51.02480,
+    "lon": 4.47760,
+    "amenity": "cafe",
+    "address": "Grote Markt, Mechelen",
+    "source": "manual"
+  },
+  {
+    "id": "manual_the_highlander",
+    "name": "The Highlander",
+    "lat": 51.02595,
+    "lon": 4.47758,
+    "amenity": "pub",
+    "address": "Grote Markt, Mechelen",
     "source": "manual"
   }
 ]
