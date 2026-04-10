@@ -252,8 +252,18 @@ function renderBuildings(_buildings) {
 function toggleBuildings(show) {
   if (!map || !isMapReady) return;
   const vis = show ? 'visible' : 'none';
-  ['building-3d-custom'].forEach(id => {
-    if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', vis);
+
+  // Toggle our custom layer
+  if (map.getLayer('building-3d-custom')) {
+    map.setLayoutProperty('building-3d-custom', 'visibility', vis);
+  }
+
+  // Also toggle every building-related layer from the base style
+  // (the liberty style renders buildings as fill + fill-extrusion layers)
+  map.getStyle().layers.forEach(layer => {
+    if (layer['source-layer'] === 'building') {
+      map.setLayoutProperty(layer.id, 'visibility', vis);
+    }
   });
 }
 
