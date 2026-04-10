@@ -1,6 +1,39 @@
 // ─── OSM / Overpass API ────────────────────────────────────────────────────
 
-const OVERPASS_URL = 'https://overpass-api.de/api/interpreter';
+// Multiple Overpass API mirrors — tried in order until one succeeds
+const OVERPASS_MIRRORS = [
+  'https://overpass-api.de/api/interpreter',
+  'https://overpass.kumi.systems/api/interpreter',
+  'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
+  'https://overpass.openstreetmap.ru/api/interpreter',
+];
+
+/**
+ * POST a query to the first Overpass mirror that responds successfully.
+ * Tries each mirror with a 15-second timeout before moving to the next.
+ */
+async function overpassFetch(query) {
+  let lastErr;
+  for (const url of OVERPASS_MIRRORS) {
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 15000);
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: query,
+        signal: controller.signal,
+      });
+      clearTimeout(timer);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch (err) {
+      console.warn(`Overpass mirror ${url} failed:`, err.message);
+      lastErr = err;
+    }
+  }
+  throw new Error(`Alle Overpass mirrors mislukt: ${lastErr?.message}`);
+}
 
 // Bounding box: covers Mechelen city centre + surrounding neighbourhoods
 // south, west, north, east
@@ -18,14 +51,7 @@ async function fetchBarsWithTerraces() {
 );
 out body geom;`;
 
-  const res = await fetch(OVERPASS_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body: query,
-  });
-
-  if (!res.ok) throw new Error(`Overpass API fout (bars): ${res.status}`);
-  const data = await res.json();
+  const data = await overpassFetch(query);
   return parseOsmBars(data.elements);
 }
 
@@ -81,14 +107,7 @@ async function fetchBuildings() {
 );
 out body geom;`;
 
-  const res = await fetch(OVERPASS_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body: query,
-  });
-
-  if (!res.ok) throw new Error(`Overpass API fout (gebouwen): ${res.status}`);
-  const data = await res.json();
+  const data = await overpassFetch(query);
   return parseOsmBuildings(data.elements);
 }
 
