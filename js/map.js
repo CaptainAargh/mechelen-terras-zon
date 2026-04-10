@@ -56,10 +56,10 @@ function _onMapLoad() {
         'fill-extrusion-color': [
           'interpolate', ['linear'],
           ['to-number', ['coalesce', ['get', 'render_height'], 8], 8],
-           0, '#1e2240',
-          10, '#252b4d',
-          20, '#2e3660',
-          40, '#374175',
+           0, '#ddd5cc',
+          10, '#d0c8bf',
+          20, '#c4bbb2',
+          40, '#b8b0a8',
         ],
         'fill-extrusion-height': [
           'interpolate', ['linear'], ['zoom'],
