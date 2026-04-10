@@ -6,21 +6,16 @@
   <title>Mechelen Terras in de Zon</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☀️</text></svg>" />
 
-  <!-- Leaflet -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-  <!-- SunCalc -->
-  <script src="https://unpkg.com/suncalc/suncalc.js"></script>
-
-  <!-- Turf.js -->
-  <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+  <!-- Local vendor libs — no third-party tracking -->
+  <link rel="stylesheet" href="vendor/leaflet.css" />
+  <script src="vendor/leaflet.js"></script>
+  <script src="vendor/suncalc.js"></script>
+  <script src="vendor/turf.min.js"></script>
 
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- Info panel -->
   <div id="panel">
     <div id="panel-header">
       <div id="brand">
@@ -33,6 +28,7 @@
     </div>
 
     <div id="panel-body">
+
       <div id="time-block">
         <div id="current-time">--:--:--</div>
         <div id="current-date">--</div>
@@ -40,19 +36,33 @@
 
       <div id="sun-block">
         <div id="sun-info">Zonpositie laden…</div>
-        <div id="sunny-count" class="count-label">Terrassen laden…</div>
+        <div id="bar-counts"></div>
+      </div>
+
+      <!-- Terrace confidence filter -->
+      <div class="filter-group">
+        <div class="filter-label">Terras zekerheid</div>
+        <div id="confidence-slider-wrap">
+          <input type="range" id="filter-confidence" min="0" max="3" value="0" step="1" />
+          <div id="confidence-labels">
+            <span>Alles</span>
+            <span>Misschien+</span>
+            <span>Waarschijnlijk+</span>
+            <span>Zeker terras</span>
+          </div>
+        </div>
       </div>
 
       <div id="controls">
         <label class="toggle-label">
           <input type="checkbox" id="filter-sunny" />
           <span class="toggle-track"><span class="toggle-thumb"></span></span>
-          Toon enkel terrassen in de zon
+          Alleen terrassen in de zon
         </label>
         <label class="toggle-label">
           <input type="checkbox" id="filter-open" />
           <span class="toggle-track"><span class="toggle-thumb"></span></span>
-          Toon enkel open terrassen
+          Alleen open terrassen
         </label>
         <label class="toggle-label">
           <input type="checkbox" id="show-buildings" />
@@ -65,24 +75,19 @@
     </div>
 
     <div id="panel-footer">
-      <p>Data: <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a></p>
+      <p>Data: <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a> · ODbL</p>
       <p>Schaduw is een schatting — bomen &amp; luifels niet inbegrepen</p>
     </div>
   </div>
 
-  <!-- Map -->
   <div id="map"></div>
 
-  <!-- Loading overlay -->
   <div id="loading">
     <div class="loading-inner">
       <div class="spinner"></div>
       <div id="loading-text">Terrassen laden…</div>
     </div>
   </div>
-
-  <!-- Error banner -->
-  <div id="error" style="display:none"></div>
 
   <script src="js/osm.js"></script>
   <script src="js/hours.js"></script>

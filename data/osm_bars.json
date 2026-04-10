@@ -1,12 +1,215 @@
 {
   "version": 0.6,
-  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "generator": "Overpass API 0.7.62.7 375dc00a",
   "osm3s": {
-    "timestamp_osm_base": "2026-04-10T08:25:00Z",
+    "timestamp_osm_base": "2026-04-10T08:58:46Z",
     "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
   },
   "elements": [
 
+{
+  "type": "node",
+  "id": 212503440,
+  "lat": 51.0181686,
+  "lon": 4.4819957,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Barboesj"
+  }
+},
+{
+  "type": "node",
+  "id": 313499887,
+  "lat": 51.0182701,
+  "lon": 4.4821554,
+  "tags": {
+    "amenity": "pub",
+    "check_date": "2024-08-10",
+    "name": "De Prof"
+  }
+},
+{
+  "type": "node",
+  "id": 313500144,
+  "lat": 51.0183817,
+  "lon": 4.4827471,
+  "tags": {
+    "amenity": "pub",
+    "created_by": "Potlatch 0.10f",
+    "name": "Friends"
+  }
+},
+{
+  "type": "node",
+  "id": 331829996,
+  "lat": 51.0266588,
+  "lon": 4.4762903,
+  "tags": {
+    "amenity": "bar",
+    "entrance:kerb:height": "0.15",
+    "entrance:step_count": "1",
+    "entrance:width": "0.8",
+    "name": "Bar Popular"
+  }
+},
+{
+  "type": "node",
+  "id": 331830077,
+  "lat": 51.0262225,
+  "lon": 4.4772908,
+  "tags": {
+    "OnroerendErfgoed:criteria": "M",
+    "amenity": "pub",
+    "contact:phone": "+32 15 20 72 06",
+    "contact:website": "https://www.degoudenvis.be/",
+    "entrance:kerb:height": "0",
+    "entrance:width": "0.75",
+    "heritage": "4",
+    "heritage:operator": "OnroerendErfgoed",
+    "heritage:website": "https://inventaris.onroerenderfgoed.be/dibe/relict/50761",
+    "image": "http://www.flickr.com/photos/erfgoed/495312562/",
+    "name": "De Gouden Vis",
+    "opening_hours": "Mo-Su 11:00-00:00",
+    "ref:OnroerendErfgoed": "50761"
+  }
+},
+{
+  "type": "node",
+  "id": 370763580,
+  "lat": 51.0275207,
+  "lon": 4.4756332,
+  "tags": {
+    "amenity": "pub",
+    "entrance:kerb:height": "0.11",
+    "entrance:ramp": "yes",
+    "entrance:step_count": "1",
+    "entrance:width": "0.9",
+    "name": "Melaan"
+  }
+},
+{
+  "type": "node",
+  "id": 455900929,
+  "lat": 51.0291011,
+  "lon": 4.4881646,
+  "tags": {
+    "amenity": "pub",
+    "name": "'d Afspraak",
+    "wheelchair": "limited"
+  }
+},
+{
+  "type": "node",
+  "id": 455901120,
+  "lat": 51.0289962,
+  "lon": 4.4835286,
+  "tags": {
+    "amenity": "pub",
+    "changing_table": "no",
+    "entrance:kerb:height": "0.39",
+    "entrance:ramp": "no",
+    "entrance:step_count": "3",
+    "entrance:width": "0.93",
+    "name": "'t Pleintje",
+    "wheelchair:turning_circle": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 455904083,
+  "lat": 51.0213518,
+  "lon": 4.4721217,
+  "tags": {
+    "amenity": "pub",
+    "check_date": "2025-02-21",
+    "name": "Plaisance"
+  }
+},
+{
+  "type": "node",
+  "id": 455905065,
+  "lat": 51.0262588,
+  "lon": 4.4771916,
+  "tags": {
+    "addr:housenumber": "9",
+    "addr:street": "Nauwstraat",
+    "amenity": "pub",
+    "entrance:kerb:height": "0.09",
+    "entrance:step_count": "1",
+    "entrance:width": "1.04",
+    "name": "De Stillen Genieter",
+    "toilets:wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 461609855,
+  "lat": 51.0283817,
+  "lon": 4.4799729,
+  "tags": {
+    "addr:housenumber": "4",
+    "addr:street": "Grote Markt",
+    "amenity": "pub",
+    "entrance:kerb:height": "0.11",
+    "entrance:step_count": "1",
+    "name": "Den IJzer",
+    "toilets:wheelchair": "no",
+    "wheelchair:turning_circle": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 461613115,
+  "lat": 51.0275005,
+  "lon": 4.4795173,
+  "tags": {
+    "amenity": "pub",
+    "changing_table": "no",
+    "entrance:kerb:height": "0.07",
+    "entrance:ramp": "no",
+    "entrance:step_count": "1",
+    "entrance:width": "0.9",
+    "name": "De Minnestreel",
+    "wheelchair:turning_circle": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 473437957,
+  "lat": 51.0228570,
+  "lon": 4.4807862,
+  "tags": {
+    "addr:city": "Mechelen",
+    "addr:housenumber": "117",
+    "addr:postcode": "2800",
+    "addr:street": "Onze-Lieve-Vrouwestraat",
+    "amenity": "bar",
+    "contact:facebook": "https://nl-nl.facebook.com/KafeeZapoi/",
+    "name": "Kafee Zapoi",
+    "old_name": "Brouwerij Grooten Keizer",
+    "website": "https://www.zapoi.be"
+  }
+},
+{
+  "type": "node",
+  "id": 473438661,
+  "lat": 51.0260130,
+  "lon": 4.4810433,
+  "tags": {
+    "addr:housenumber": "52",
+    "addr:street": "Bruul",
+    "amenity": "pub",
+    "check_date": "2024-04-10",
+    "contact:facebook": "https://www.facebook.com/Brasserie-De-Margriet-1202626039748941",
+    "contact:instagram": "https://www.instagram.com/brasseriedemargriet",
+    "email": "b.heungens@gmail.com",
+    "name": "De Margriet",
+    "opening_hours": "Mo-Th 11:30-20:30; Fr-Sa 11:30-21:00; Su off",
+    "phone": "+32 15210017",
+    "website": "https://demargriet.be/",
+    "wheelchair": "yes"
+  }
+},
 {
   "type": "node",
   "id": 939114891,
@@ -29,6 +232,307 @@
 },
 {
   "type": "node",
+  "id": 939114904,
+  "lat": 51.0284702,
+  "lon": 4.4831285,
+  "tags": {
+    "addr:city": "Mechelen",
+    "addr:housenumber": "32",
+    "addr:postcode": "2800",
+    "addr:street": "Befferstraat",
+    "amenity": "pub",
+    "entrance:kerb:height": "0",
+    "entrance:step_count": "0",
+    "entrance:width": "2",
+    "name": "'t Groot Licht"
+  }
+},
+{
+  "type": "node",
+  "id": 1161863827,
+  "lat": 51.0297424,
+  "lon": 4.4890750,
+  "tags": {
+    "amenity": "pub",
+    "name": "Nineveh",
+    "ref:vatin": "BE0713.697.987"
+  }
+},
+{
+  "type": "node",
+  "id": 1390640102,
+  "lat": 51.0180470,
+  "lon": 4.4815746,
+  "tags": {
+    "amenity": "pub",
+    "changing_table": "no",
+    "entrance:kerb:height": "0.33",
+    "entrance:ramp": "no",
+    "entrance:step_count": "1",
+    "entrance:width": "0.78",
+    "name": "Barcelone",
+    "toilets:wheelchair": "no",
+    "wheelchair:turning_circle": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 1390640123,
+  "lat": 51.0184671,
+  "lon": 4.4826557,
+  "tags": {
+    "amenity": "pub",
+    "name": "De olifant"
+  }
+},
+{
+  "type": "node",
+  "id": 1390640137,
+  "lat": 51.0182242,
+  "lon": 4.4820949,
+  "tags": {
+    "amenity": "pub",
+    "check_date": "2024-08-10",
+    "name": "Maroon"
+  }
+},
+{
+  "type": "node",
+  "id": 1751649528,
+  "lat": 51.0219509,
+  "lon": 4.4820044,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Cupa"
+  }
+},
+{
+  "type": "node",
+  "id": 2404903679,
+  "lat": 51.0174378,
+  "lon": 4.4669872,
+  "tags": {
+    "amenity": "pub",
+    "name": "Schonenberg",
+    "old_name": "Pandoer"
+  }
+},
+{
+  "type": "node",
+  "id": 3844601424,
+  "lat": 51.0166339,
+  "lon": 4.4806120,
+  "tags": {
+    "addr:housenumber": "55",
+    "addr:street": "Stationsstraat",
+    "amenity": "cafe",
+    "check_date": "2024-09-27",
+    "entrance": "main",
+    "internet_access": "wlan",
+    "name": "Bar Marie",
+    "opening_hours": "Mo-Fr 08:30-16:00",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4842570776,
+  "lat": 51.0234305,
+  "lon": 4.4821390,
+  "tags": {
+    "addr:housenumber": "127",
+    "addr:street": "Bruul",
+    "amenity": "cafe",
+    "changing_table": "no",
+    "cuisine": "coffee_shop",
+    "diet:vegetarian": "yes",
+    "entrance:automatic_door": "no",
+    "entrance:door": "hinged",
+    "entrance:kerb:height": "7 cm",
+    "entrance:step_count": "1",
+    "entrance:width": "86 cm",
+    "name": "Dame Blanche",
+    "ramp:wheelchair": "yes",
+    "toilets:wheelchair": "no",
+    "wheelchair": "yes",
+    "wheelchair:turning_circle": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5227794071,
+  "lat": 51.0183005,
+  "lon": 4.4821956,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Bar patroon"
+  }
+},
+{
+  "type": "node",
+  "id": 5620326851,
+  "lat": 51.0292185,
+  "lon": 4.4799467,
+  "tags": {
+    "addr:city": "Mechelen",
+    "addr:housenumber": "7",
+    "addr:postcode": "2800",
+    "addr:street": "Nieuwwerk",
+    "amenity": "pub",
+    "brewery": "various",
+    "email": "info@defloerenaap.be",
+    "facebook": "https://www.facebook.com/De-Floeren-Aap-430314663968443/?ref=page_internal",
+    "name": "De Floeren aap"
+  }
+},
+{
+  "type": "node",
+  "id": 5620326852,
+  "lat": 51.0291613,
+  "lon": 4.4798786,
+  "tags": {
+    "amenity": "pub",
+    "name": "Borrel babbel"
+  }
+},
+{
+  "type": "node",
+  "id": 5920830187,
+  "lat": 51.0263672,
+  "lon": 4.4785319,
+  "tags": {
+    "amenity": "cafe",
+    "entrance:kerb:height": "0.08",
+    "entrance:step_count": "1",
+    "entrance:width": "0.88",
+    "name": "Croissy"
+  }
+},
+{
+  "type": "node",
+  "id": 5951685721,
+  "lat": 51.0285644,
+  "lon": 4.4826528,
+  "tags": {
+    "addr:city": "Mechelen",
+    "addr:housenumber": "31",
+    "addr:postcode": "2800",
+    "addr:street": "Befferstraat",
+    "amenity": "cafe",
+    "breakfast": "yes",
+    "cuisine": "coffee_shop;sandwich",
+    "entrance:kerb:height": "0.11",
+    "entrance:step_count": "1",
+    "entrance:width": "0.8",
+    "name": "Knabbel & Babbel",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5983325560,
+  "lat": 51.0260779,
+  "lon": 4.4825741,
+  "tags": {
+    "addr:city": "Mechelen",
+    "addr:housenumber": "24",
+    "addr:postcode": "2800",
+    "addr:street": "Leermarkt",
+    "amenity": "cafe",
+    "cuisine": "coffee_shop;breakfast;lunch",
+    "entrance:kerb:height": "0.25",
+    "entrance:step_count": "2",
+    "entrance:width": "0.7",
+    "name": "Noen",
+    "opening_hours": "Tu-Fr 09:00-16:00; Sa 09:00-18:00; Su,Mo,PH off",
+    "website": "http://www.denoen.com/"
+  }
+},
+{
+  "type": "node",
+  "id": 6468495312,
+  "lat": 51.0281583,
+  "lon": 4.4790203,
+  "tags": {
+    "addr:city": "Mechelen",
+    "addr:housenumber": "22",
+    "addr:postcode": "2800",
+    "addr:street": "Steenweg",
+    "amenity": "pub",
+    "entrance:kerb:height": "0.19",
+    "entrance:step_count": "2",
+    "entrance:width": "0.74",
+    "name": "Unwined",
+    "opening_hours": "Tu-Th 17:00-23:59; Fr-Sa 12:00-23:59; Su 15:00-22:00",
+    "shop": "wine",
+    "toilets:wheelchair": "no",
+    "website": "https://www.unwined.be/",
+    "wheelchair:turning_circle": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6482635456,
+  "lat": 51.0284283,
+  "lon": 4.4829508,
+  "tags": {
+    "amenity": "pub",
+    "entrance:kerb:height": "0.1",
+    "entrance:step_count": "1",
+    "entrance:width": "0.9",
+    "name": "Den Troef"
+  }
+},
+{
+  "type": "node",
+  "id": 6482734459,
+  "lat": 51.0247276,
+  "lon": 4.4880735,
+  "tags": {
+    "amenity": "pub",
+    "name": "De Planet"
+  }
+},
+{
+  "type": "node",
+  "id": 6522121087,
+  "lat": 51.0262203,
+  "lon": 4.4775344,
+  "tags": {
+    "amenity": "cafe",
+    "check_date": "2024-08-10",
+    "name": "Café de Wei"
+  }
+},
+{
+  "type": "node",
+  "id": 6522121285,
+  "lat": 51.0266189,
+  "lon": 4.4787629,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Coffice",
+    "opening_hours": "Mo-Sa 08:00-20:00; Su 09:00-14:00"
+  }
+},
+{
+  "type": "node",
+  "id": 6525627987,
+  "lat": 51.0296143,
+  "lon": 4.4778295,
+  "tags": {
+    "amenity": "bar",
+    "entrance:kerb:height": "0.16",
+    "entrance:step_count": "1",
+    "entrance:width": "0.74",
+    "name": "Foom",
+    "opening_hours": "Mo, We-Fr 08:30-16:00; Sa-Su 09:00-17:00",
+    "toilets:wheelchair": "no",
+    "wheelchair:turning_circle": "yes"
+  }
+},
+{
+  "type": "node",
   "id": 6878380185,
   "lat": 51.0268650,
   "lon": 4.4763264,
@@ -41,6 +545,335 @@
     "name": "Créma",
     "opening_hours": "We-Fr 09:00-16:00; Sa-Su 09:00-17:00",
     "outdoor_seating": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 7623752621,
+  "lat": 51.0305656,
+  "lon": 4.4821259,
+  "tags": {
+    "amenity": "pub",
+    "entrance:kerb:height": "0.09",
+    "entrance:step_count": "1",
+    "entrance:width": "0.9",
+    "name": "Het Maanlicht",
+    "website": "https://www.hetmaanlicht.be"
+  }
+},
+{
+  "type": "node",
+  "id": 7623936913,
+  "lat": 51.0276165,
+  "lon": 4.4810400,
+  "tags": {
+    "amenity": "pub",
+    "entrance:kerb:height": "0",
+    "entrance:step_count": "0",
+    "entrance:width": "1.36",
+    "name": "O'Fiachs Irish Pub",
+    "toilets:wheelchair": "no",
+    "wheelchair:turning_circle": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 7633403154,
+  "lat": 51.0283902,
+  "lon": 4.4784672,
+  "tags": {
+    "amenity": "bar",
+    "bar": "cocktail",
+    "entrance:kerb:height": "0",
+    "entrance:step_count": "1",
+    "name": "Barramundo",
+    "toilets:wheelchair": "yes",
+    "toilets:wheelchair:accessible_via": "ground floor",
+    "wheelchair:turning_circle": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 7633409315,
+  "lat": 51.0283128,
+  "lon": 4.4787253,
+  "tags": {
+    "amenity": "pub",
+    "entrance:kerb:height": "0.15",
+    "entrance:step_count": "2",
+    "entrance:width": "0.69",
+    "name": "Bij Jessie",
+    "toilets:wheelchair": "no",
+    "wheelchair:turning_circle": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 7633409506,
+  "lat": 51.0282854,
+  "lon": 4.4788180,
+  "tags": {
+    "amenity": "pub",
+    "check_date": "2024-08-10",
+    "name": "De bovenstad"
+  }
+},
+{
+  "type": "node",
+  "id": 7633419500,
+  "lat": 51.0283298,
+  "lon": 4.4786828,
+  "tags": {
+    "amenity": "pub",
+    "name": "Los bandidos"
+  }
+},
+{
+  "type": "node",
+  "id": 7633429394,
+  "lat": 51.0282303,
+  "lon": 4.4789226,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Coffee and Cake by Savarin"
+  }
+},
+{
+  "type": "node",
+  "id": 7657178390,
+  "lat": 51.0290672,
+  "lon": 4.4837006,
+  "tags": {
+    "amenity": "cafe",
+    "entrance:kerb:height": "0.24",
+    "entrance:step_count": "3",
+    "entrance:width": "1.24",
+    "name": "Grand Cafe Barista"
+  }
+},
+{
+  "type": "node",
+  "id": 7658985002,
+  "lat": 51.0280740,
+  "lon": 4.4790657,
+  "tags": {
+    "amenity": "pub",
+    "entrance:kerb:height": "0.4",
+    "entrance:step_count": "2",
+    "name": "Staf Sels"
+  }
+},
+{
+  "type": "node",
+  "id": 7658985543,
+  "lat": 51.0289849,
+  "lon": 4.4800723,
+  "tags": {
+    "amenity": "bar",
+    "name": "Bar Z"
+  }
+},
+{
+  "type": "node",
+  "id": 7683177485,
+  "lat": 51.0246693,
+  "lon": 4.4769836,
+  "tags": {
+    "addr:city": "Mechelen",
+    "addr:housenumber": "6",
+    "addr:postcode": "2800",
+    "addr:street": "Onze-Lieve-Vrouwestraat",
+    "amenity": "cafe",
+    "contact:facebook": "https://www.facebook.com/pages/Kaffee-Ine-Mechelen/112698329065288/",
+    "cuisine": "coffee_shop",
+    "entrance:kerb:height": "0.02",
+    "entrance:step_count": "1",
+    "entrance:width": "0.93",
+    "name": "Kaffee-Ine",
+    "toilets:wheelchair": "no",
+    "wheelchair:turning_circle": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 8374966628,
+  "lat": 51.0283418,
+  "lon": 4.4799341,
+  "tags": {
+    "addr:housenumber": "3",
+    "addr:street": "Grote Markt",
+    "amenity": "pub",
+    "entrance:kerb:height": "0",
+    "entrance:ramp": "no",
+    "entrance:step_count": "1",
+    "name": "Café Salvator",
+    "toilets:wheelchair": "yes",
+    "toilets:wheelchair:accessible_via": "ground floor"
+  }
+},
+{
+  "type": "node",
+  "id": 8918502352,
+  "lat": 51.0107676,
+  "lon": 4.4839152,
+  "tags": {
+    "amenity": "bar",
+    "bar": "hookah",
+    "contact:facebook": "https://www.facebook.com/Ladresse-Lounge-Mechelen-110019928021236",
+    "email": "info@ladresselounge.be",
+    "name": "Ladresse",
+    "opening_hours": "Mo-Th 16:00-01:00, Fr-Sa 15:00-02:00, Su 15:00-01:00",
+    "phone": "+32 492 68 00 68",
+    "website": "https://www.ladresselounge.be"
+  }
+},
+{
+  "type": "node",
+  "id": 8983317679,
+  "lat": 51.0297544,
+  "lon": 4.4790488,
+  "tags": {
+    "addr:city": "Mechelen",
+    "addr:housenumber": "20",
+    "addr:postcode": "2800",
+    "addr:street": "Wollemarkt",
+    "amenity": "bar",
+    "entrance:kerb:height": "0.34",
+    "entrance:step_count": "2",
+    "entrance:width": "0.94",
+    "lgbtq": "primary",
+    "name": "De Contwaar",
+    "website": "https://www.tourenaar.be/vermelding/de-contwaar/",
+    "wheelchair:turning_circle": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9221544221,
+  "lat": 51.0276334,
+  "lon": 4.4808836,
+  "tags": {
+    "amenity": "cafe",
+    "contact:email": "supemechelen@hotmail.com",
+    "contact:instagram": "https://www.instagram.com/supemechelen",
+    "contact:phone": "+32 15 76 08 13",
+    "name": "SuPe",
+    "was:name": "Grá"
+  }
+},
+{
+  "type": "node",
+  "id": 9221544222,
+  "lat": 51.0276327,
+  "lon": 4.4806547,
+  "tags": {
+    "addr:housenumber": "26",
+    "addr:street": "Grote Markt",
+    "amenity": "pub",
+    "entrance:kerb:height": "0.15",
+    "entrance:step_count": "2",
+    "entrance:width": "0.7",
+    "name": "ChAlex",
+    "old_name": "Keulen, later Het Paviljoen, tot 2016 Pavillon Belge",
+    "toilets:wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 9221544225,
+  "lat": 51.0276744,
+  "lon": 4.4803347,
+  "tags": {
+    "amenity": "pub",
+    "food": "yes",
+    "name": "Bier Central",
+    "old_name": "Afspanning De Zwaan",
+    "website": "https://www.biercentral.be/"
+  }
+},
+{
+  "type": "node",
+  "id": 9221544230,
+  "lat": 51.0277712,
+  "lon": 4.4799265,
+  "tags": {
+    "addr:housenumber": "35",
+    "addr:street": "Grote Markt",
+    "amenity": "pub",
+    "name": "Oase"
+  }
+},
+{
+  "type": "node",
+  "id": 9221544233,
+  "lat": 51.0284881,
+  "lon": 4.4803476,
+  "tags": {
+    "addr:housenumber": "8",
+    "addr:street": "Grote Markt",
+    "amenity": "pub",
+    "name": "Beep Beep"
+  }
+},
+{
+  "type": "node",
+  "id": 9221544234,
+  "lat": 51.0284501,
+  "lon": 4.4804873,
+  "tags": {
+    "addr:housenumber": "10",
+    "addr:street": "Grote Markt",
+    "amenity": "pub",
+    "name": "De Beurs"
+  }
+},
+{
+  "type": "node",
+  "id": 9221544235,
+  "lat": 51.0284139,
+  "lon": 4.4806300,
+  "tags": {
+    "addr:housenumber": "12",
+    "addr:street": "Grote Markt",
+    "amenity": "pub",
+    "changing_table": "no",
+    "entrance:kerb:height": "0.12",
+    "entrance:ramp": "no",
+    "entrance:step_count": "1",
+    "entrance:width": "0.88",
+    "name": "Glasgow",
+    "ref:OnroerendErfgoed": "3712",
+    "toilets:wheelchair": "yes",
+    "toilets:wheelchair:accessible_via": "ground floor",
+    "wheelchair:turning_circle": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9221544237,
+  "lat": 51.0283518,
+  "lon": 4.4809107,
+  "tags": {
+    "amenity": "pub",
+    "name": "Den Amitié",
+    "phone": "+32 15 20 62 54"
+  }
+},
+{
+  "type": "node",
+  "id": 9221544238,
+  "lat": 51.0267242,
+  "lon": 4.4820543,
+  "tags": {
+    "addr:housenumber": "20",
+    "addr:street": "Botermarkt",
+    "amenity": "cafe",
+    "check_date": "2024-08-10",
+    "entrance:automatic_door": "no",
+    "entrance:door": "hinged",
+    "entrance:width": "82 cm",
+    "name": "Café Stardust",
+    "wheelchair": "yes"
   }
 },
 {
@@ -65,6 +898,232 @@
 },
 {
   "type": "node",
+  "id": 9285864164,
+  "lat": 51.0267325,
+  "lon": 4.4764487,
+  "tags": {
+    "amenity": "bar",
+    "entrance:kerb:height": "0.1",
+    "entrance:step_count": "1",
+    "entrance:width": "0.75",
+    "name": "'t Ankertje",
+    "opening_hours": "Mo-Th 15:00-24:00; Fr 15:00-02:00, Sa 12:00-02:00, Su 14:00-23:00"
+  }
+},
+{
+  "type": "node",
+  "id": 9970345330,
+  "lat": 51.0272442,
+  "lon": 4.4807996,
+  "tags": {
+    "addr:city": "Mechelen",
+    "addr:housenumber": "14",
+    "addr:postcode": "2800",
+    "addr:street": "Bruul",
+    "amenity": "cafe",
+    "cuisine": "bubble_tea",
+    "entrance:kerb:height": "0.05",
+    "entrance:step_count": "1",
+    "entrance:width": "0.9",
+    "name": "Hitea",
+    "wheelchair:turning_circle": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 10559589447,
+  "lat": 51.0265801,
+  "lon": 4.4842328,
+  "tags": {
+    "amenity": "cafe",
+    "cuisine": "coffee_shop",
+    "name": "ROSS Coffee",
+    "website": "https://www.devleeshalle.be/nl/smaakmaker/ross-coffee/"
+  }
+},
+{
+  "type": "node",
+  "id": 10559589448,
+  "lat": 51.0266557,
+  "lon": 4.4842182,
+  "tags": {
+    "amenity": "pub",
+    "entrance:kerb:height": "0.15",
+    "entrance:step_count": "1",
+    "entrance:width": "0.8",
+    "name": "Bar & Brood",
+    "website": "https://www.devleeshalle.be/nl/smaakmaker/bar-brood/"
+  }
+},
+{
+  "type": "node",
+  "id": 10559627018,
+  "lat": 51.0247014,
+  "lon": 4.4766934,
+  "tags": {
+    "addr:housenumber": "15",
+    "addr:street": "Korenmarkt",
+    "amenity": "bar",
+    "name": "Autobus"
+  }
+},
+{
+  "type": "node",
+  "id": 10559627019,
+  "lat": 51.0251350,
+  "lon": 4.4763077,
+  "tags": {
+    "amenity": "pub",
+    "changing_table": "no",
+    "entrance:kerb:height": "0",
+    "entrance:step_count": "0",
+    "entrance:width": "0.83",
+    "name": "Antverpia",
+    "toilets:wheelchair": "no",
+    "wheelchair:turning_circle": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 10559627020,
+  "lat": 51.0250185,
+  "lon": 4.4762252,
+  "tags": {
+    "amenity": "pub",
+    "entrance:kerb:height": "0.13",
+    "entrance:step_count": "2",
+    "entrance:width": "0.73",
+    "name": "De Korenmet",
+    "toilets:wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 10570853513,
+  "lat": 51.0223740,
+  "lon": 4.4675096,
+  "tags": {
+    "amenity": "bar",
+    "name": "Café Tilt"
+  }
+},
+{
+  "type": "node",
+  "id": 10571242102,
+  "lat": 51.0233137,
+  "lon": 4.4821585,
+  "tags": {
+    "amenity": "cafe",
+    "contact:instagram": "https://instagram.com/mimi.mechelen",
+    "cuisine": "coffee_shop",
+    "name": "Mimi",
+    "takeaway": "only"
+  }
+},
+{
+  "type": "node",
+  "id": 10577718351,
+  "lat": 51.0287302,
+  "lon": 4.4771427,
+  "tags": {
+    "amenity": "pub",
+    "changing_table": "no",
+    "entrance:kerb:height": "0",
+    "entrance:step_count": "0",
+    "entrance:width": "1.3",
+    "image": "https://photos.app.goo.gl/JDGojA8RPet8ifcX6",
+    "name": "Kuub",
+    "website": "https://dekuub.be",
+    "wheelchair:turning_circle": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 10610743788,
+  "lat": 51.0335749,
+  "lon": 4.4801075,
+  "tags": {
+    "amenity": "cafe",
+    "contact:facebook": "https://www.facebook.com/barbib2800/",
+    "contact:instagram": "https://www.instagram.com/barbib2800/",
+    "contact:website": "https://barbib2800.be/home/",
+    "name": "Barbib"
+  }
+},
+{
+  "type": "node",
+  "id": 10618574136,
+  "lat": 51.0247669,
+  "lon": 4.4768142,
+  "tags": {
+    "amenity": "cafe",
+    "contact:facebook": "https://www.facebook.com/katogateaux",
+    "contact:instagram": "https://www.instagram.com/katogateaux/",
+    "contact:website": "https://katogateaux.be/",
+    "cuisine": "coffee_shop;dessert",
+    "diet:vegan": "only",
+    "name": "Kato Gateaux"
+  }
+},
+{
+  "type": "node",
+  "id": 10641981930,
+  "lat": 51.0269976,
+  "lon": 4.4808203,
+  "tags": {
+    "addr:city": "Mechelen",
+    "addr:housenumber": "26",
+    "addr:postcode": "2800",
+    "addr:street": "Bruul",
+    "amenity": "cafe",
+    "branch": "Mechelen",
+    "brand": "IzyCoffee",
+    "brand:wikidata": "Q124358963",
+    "cuisine": "coffee_shop",
+    "internet_access": "wlan",
+    "internet_access:fee": "customers",
+    "name": "IzyCoffee",
+    "opening_hours": "Mo-Su 08:00-18:00",
+    "payment:cash": "yes",
+    "payment:contactless": "yes",
+    "takeaway": "yes",
+    "website": "https://www.izycoffee.be/",
+    "website:menu": "https://www.izycoffee.be/koffiekaart"
+  }
+},
+{
+  "type": "node",
+  "id": 10729356101,
+  "lat": 51.0324905,
+  "lon": 4.4745975,
+  "tags": {
+    "amenity": "public_bookcase",
+    "mapillary": "https://www.mapillary.com/app/?pKey=750201876563579"
+  }
+},
+{
+  "type": "node",
+  "id": 10765836177,
+  "lat": 51.0284286,
+  "lon": 4.4805702,
+  "tags": {
+    "amenity": "pub",
+    "name": "Bar Makadam",
+    "website": "https://www.barmakadam.be"
+  }
+},
+{
+  "type": "node",
+  "id": 10889021687,
+  "lat": 51.0233575,
+  "lon": 4.4745897,
+  "tags": {
+    "amenity": "public_bookcase",
+    "public_bookcase:type": "glass_cabinet"
+  }
+},
+{
+  "type": "node",
   "id": 10921043833,
   "lat": 51.0270583,
   "lon": 4.4791448,
@@ -82,6 +1141,347 @@
     "outdoor_seating": "yes",
     "phone": "+32 15 65 42 90",
     "website": "https://www.wasbar.be/restaurants/wasbar-mechelen"
+  }
+},
+{
+  "type": "node",
+  "id": 10923727735,
+  "lat": 51.0273719,
+  "lon": 4.4822686,
+  "tags": {
+    "amenity": "cafe",
+    "contact:facebook": "https://www.facebook.com/profile.php?id=100090143734087",
+    "entrance:automatic_door": "no",
+    "entrance:door": "hinged",
+    "level": "0",
+    "name": "Cats & Cups",
+    "opening_hours": "Tu-Fr 10:00-17:00; Sa 09:00-17:00; Mo,Su,PH off",
+    "toilets:wheelchair": "yes",
+    "website": "https://www.cats-and-cups.be/",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 11104579514,
+  "lat": 51.0273187,
+  "lon": 4.4787735,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Croque 'n roll"
+  }
+},
+{
+  "type": "node",
+  "id": 11684356369,
+  "lat": 51.0240841,
+  "lon": 4.4756605,
+  "tags": {
+    "amenity": "cafe",
+    "name": "bokes en co"
+  }
+},
+{
+  "type": "node",
+  "id": 12194107401,
+  "lat": 51.0321793,
+  "lon": 4.4774346,
+  "tags": {
+    "amenity": "public_bookcase",
+    "capacity": "20",
+    "name": "Boîte à livres LDC De Rooster"
+  }
+},
+{
+  "type": "node",
+  "id": 12214719410,
+  "lat": 51.0267059,
+  "lon": 4.4822301,
+  "tags": {
+    "addr:city": "Mechelen",
+    "addr:housenumber": "24",
+    "addr:postcode": "2800",
+    "addr:street": "Botermarkt",
+    "amenity": "cafe",
+    "entrance:automatic_door": "no",
+    "entrance:door": "hinged",
+    "entrance:kerb:height": "7,5 cm",
+    "entrance:step_count": "1",
+    "entrance:width": "97 cm",
+    "name": "Café Au Lait",
+    "ramp:wheelchair": "yes",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12638592284,
+  "lat": 51.0307098,
+  "lon": 4.4823763,
+  "tags": {
+    "addr:housenumber": "63",
+    "addr:street": "Frederik De Merodestraat",
+    "amenity": "cafe",
+    "email": "Info@hvbmuseum-shop-koffiebar.be",
+    "name": "'t Schipke",
+    "opening_hours": "We-Su 10:00-17:00",
+    "phone": "+32 15 67 70 27",
+    "website": "https://www.hvbmuseum-shop-koffiebar.be/koffiebar/"
+  }
+},
+{
+  "type": "node",
+  "id": 12833452774,
+  "lat": 51.0178293,
+  "lon": 4.4832100,
+  "tags": {
+    "amenity": "cafe",
+    "brand": "Madmum",
+    "contact:website": "https://madmumcoffee.be/onze-koffiebars",
+    "cuisine": "coffee_shop",
+    "full_name": "Madmum Coffee Roasters Station Mechelen",
+    "level": "0",
+    "name": "Madmum",
+    "note": "location fixed, now present at the temporary entry just before platform 1",
+    "opening_hours": "Mo-Fr 06:00-19:00; Sa 07:30-18:00; Su 08:00-17:00",
+    "reusable_packaging:accept": "yes",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 13089144960,
+  "lat": 51.0207323,
+  "lon": 4.4911560,
+  "tags": {
+    "amenity": "public_bookcase",
+    "books": "adults;children",
+    "check_date": "2025-08-22",
+    "colour": "Wit",
+    "public_bookcase:type": "wooden_cabinet"
+  }
+},
+{
+  "type": "node",
+  "id": 13269404902,
+  "lat": 51.0271901,
+  "lon": 4.4800933,
+  "tags": {
+    "amenity": "cafe",
+    "check_date": "2026-03-20",
+    "check_date:opening_hours": "2026-03-20",
+    "name": "If you like Black Cats",
+    "old_name": "Matsu Bubble Tea Shop",
+    "opening_hours": "We 10:00-18:00; Th 10:00-22:00; Fr 12:00-22:00; Sa 10:00-20:00; Su 11:00-17:00",
+    "phone": "+32 479 54 70 72"
+  }
+},
+{
+  "type": "node",
+  "id": 13527133363,
+  "lat": 51.0259838,
+  "lon": 4.4781332,
+  "tags": {
+    "amenity": "cafe",
+    "contact:website": "https://www.madmumcoffee.be/",
+    "cuisine": "coffee_shop",
+    "name": "Madmum",
+    "opening_hours": "closed"
+  }
+},
+{
+  "type": "node",
+  "id": 13719605913,
+  "lat": 51.0107736,
+  "lon": 4.4877606,
+  "tags": {
+    "amenity": "cafe",
+    "contact:facebook": "https://www.facebook.com/Bardok.Mechelen/",
+    "contact:instagram": "https://www.instagram.com/bardok.mechelen/",
+    "name": "Bardok"
+  }
+},
+{
+  "type": "way",
+  "id": 85615110,
+  "bounds": {
+    "minlat": 51.0192875,
+    "minlon": 4.4634686,
+    "maxlat": 51.0195992,
+    "maxlon": 4.4640475
+  },
+  "nodes": [
+    993131966,
+    993131281,
+    5638801364,
+    5638801363,
+    993131219,
+    8209131564,
+    5638801362,
+    5638801361,
+    993130675,
+    993130813,
+    5638801360,
+    5638801359,
+    5638801358,
+    5638801357,
+    5638801356,
+    5638801355,
+    5638801354,
+    5638801353,
+    5638801352,
+    5638801351,
+    5638801350,
+    5638801349,
+    5638801348,
+    5638801347,
+    5638801346,
+    5638801345,
+    1393621907,
+    993131966
+  ],
+  "geometry": [
+    { "lat": 51.0194258, "lon": 4.4634686 },
+    { "lat": 51.0194524, "lon": 4.4635166 },
+    { "lat": 51.0194770, "lon": 4.4634825 },
+    { "lat": 51.0194998, "lon": 4.4635238 },
+    { "lat": 51.0195181, "lon": 4.4634982 },
+    { "lat": 51.0195809, "lon": 4.4636070 },
+    { "lat": 51.0195992, "lon": 4.4636388 },
+    { "lat": 51.0195687, "lon": 4.4636824 },
+    { "lat": 51.0195775, "lon": 4.4637003 },
+    { "lat": 51.0194402, "lon": 4.4638934 },
+    { "lat": 51.0194767, "lon": 4.4639617 },
+    { "lat": 51.0194150, "lon": 4.4640475 },
+    { "lat": 51.0193365, "lon": 4.4639066 },
+    { "lat": 51.0193594, "lon": 4.4638765 },
+    { "lat": 51.0193458, "lon": 4.4638546 },
+    { "lat": 51.0193386, "lon": 4.4638631 },
+    { "lat": 51.0193279, "lon": 4.4638686 },
+    { "lat": 51.0193182, "lon": 4.4638658 },
+    { "lat": 51.0193103, "lon": 4.4638554 },
+    { "lat": 51.0193020, "lon": 4.4638463 },
+    { "lat": 51.0192958, "lon": 4.4638302 },
+    { "lat": 51.0192957, "lon": 4.4638116 },
+    { "lat": 51.0193094, "lon": 4.4637799 },
+    { "lat": 51.0192890, "lon": 4.4637438 },
+    { "lat": 51.0192875, "lon": 4.4637348 },
+    { "lat": 51.0193139, "lon": 4.4636987 },
+    { "lat": 51.0192907, "lon": 4.4636582 },
+    { "lat": 51.0194258, "lon": 4.4634686 }
+  ],
+  "tags": {
+    "addr:state": "VLG",
+    "amenity": "pub",
+    "building": "pub",
+    "building:levels": "1",
+    "cuisine": "local",
+    "fixme": "geometry moet aangepast worden",
+    "food": "yes",
+    "indoor_seating": "yes",
+    "name": "Vertoi",
+    "old_name": "'t Park",
+    "outdoor_seating": "yes",
+    "roof:levels": "0",
+    "roof:shape": "flat",
+    "source:geometry:date": "2014-03-11",
+    "source:geometry:ref": "Gbg/506069"
+  }
+},
+{
+  "type": "way",
+  "id": 91859096,
+  "bounds": {
+    "minlat": 51.0196707,
+    "minlon": 4.4645459,
+    "maxlat": 51.0198674,
+    "maxlon": 4.4647913
+  },
+  "nodes": [
+    1067463048,
+    11436617052,
+    11436617051,
+    1067462957,
+    1067463140,
+    1067463188,
+    1067462775,
+    1067463087,
+    1067463263,
+    1067462734,
+    1067462907,
+    11436617050,
+    11436617049,
+    11436617048,
+    11436617047,
+    1067462806,
+    1067463048
+  ],
+  "geometry": [
+    { "lat": 51.0196707, "lon": 4.4647293 },
+    { "lat": 51.0197143, "lon": 4.4647416 },
+    { "lat": 51.0197103, "lon": 4.4647804 },
+    { "lat": 51.0197467, "lon": 4.4647913 },
+    { "lat": 51.0197500, "lon": 4.4647607 },
+    { "lat": 51.0197820, "lon": 4.4647683 },
+    { "lat": 51.0197840, "lon": 4.4647542 },
+    { "lat": 51.0198059, "lon": 4.4647603 },
+    { "lat": 51.0198125, "lon": 4.4646992 },
+    { "lat": 51.0198543, "lon": 4.4647119 },
+    { "lat": 51.0198674, "lon": 4.4646076 },
+    { "lat": 51.0197358, "lon": 4.4645645 },
+    { "lat": 51.0197369, "lon": 4.4645588 },
+    { "lat": 51.0196921, "lon": 4.4645459 },
+    { "lat": 51.0196917, "lon": 4.4645537 },
+    { "lat": 51.0196866, "lon": 4.4645524 },
+    { "lat": 51.0196707, "lon": 4.4647293 }
+  ],
+  "tags": {
+    "addr:housenumber": "63",
+    "addr:street": "Ridder Dessainlaan",
+    "amenity": "pub",
+    "building": "house",
+    "name": "Het Vissershuis"
+  }
+},
+{
+  "type": "way",
+  "id": 229393177,
+  "bounds": {
+    "minlat": 51.0276780,
+    "minlon": 4.4793066,
+    "maxlat": 51.0277875,
+    "maxlon": 4.4795051
+  },
+  "nodes": [
+    3297665757,
+    2379988091,
+    3297665758,
+    3297665759,
+    2379988093,
+    3297665757
+  ],
+  "geometry": [
+    { "lat": 51.0277053, "lon": 4.4795051 },
+    { "lat": 51.0276780, "lon": 4.4794793 },
+    { "lat": 51.0277579, "lon": 4.4793204 },
+    { "lat": 51.0277646, "lon": 4.4793066 },
+    { "lat": 51.0277875, "lon": 4.4793339 },
+    { "lat": 51.0277053, "lon": 4.4795051 }
+  ],
+  "tags": {
+    "OnroerendErfgoed:criteria": "BE",
+    "amenity": "bar",
+    "building": "yes",
+    "building:levels": "1",
+    "heritage": "4",
+    "heritage:operator": "OnroerendErfgoed",
+    "heritage:website": "https://id.erfgoed.net/erfgoedobjecten/59205",
+    "historic": "house",
+    "name": "Bar Klak",
+    "old_name": "'t Pothuisken;Kleynhuysken",
+    "ref:OnroerendErfgoed": "59205",
+    "start_date": "1819",
+    "website": "https://www.barklak.be/"
   }
 }
 
