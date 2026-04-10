@@ -25,14 +25,13 @@ function initMap() {
 }
 
 function _onMapLoad() {
+  // Find a good insertion point (before labels/symbols)
+  const firstSymbol = map.getStyle().layers.find(l => l.type === 'symbol')?.id;
+
   // ── 3D building extrusion ──────────────────────────────────────────────
   // The Liberty style already renders buildings; we override with a richer
   // extrusion that uses a height-based colour gradient.
   if (!map.getLayer('building-3d')) {
-    // Find a good insertion point (before labels/symbols)
-    const layers = map.getStyle().layers;
-    const firstSymbol = layers.find(l => l.type === 'symbol')?.id;
-
     map.addLayer({
       id: 'building-3d-custom',
       source: 'openmaptiles',
@@ -61,6 +60,22 @@ function _onMapLoad() {
       },
     }, firstSymbol);
   }
+
+  // ── Shadow overlay source ──────────────────────────────────────────────
+  map.addSource('shadows', {
+    type: 'geojson',
+    data: _emptyGeoJSON(),
+  });
+
+  map.addLayer({
+    id: 'shadows-fill',
+    type: 'fill',
+    source: 'shadows',
+    paint: {
+      'fill-color': '#05081a',
+      'fill-opacity': 0.48,
+    },
+  }, firstSymbol);  // insert below labels/symbols
 
   // ── Bar data source ────────────────────────────────────────────────────
   map.addSource('bars', {
@@ -217,6 +232,64 @@ function toggleBuildings(show) {
   ['building-3d-custom'].forEach(id => {
     if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', vis);
   });
+}
+
+/**
+ * Compute and render shadow polygons for all buildings.
+ * @param {Array}   buildings - from parseOsmBuildings()
+ * @param {Object}  sunPos    - from getSunPosition()
+ * @param {boolean} show      - whether the toggle is on
+ */
+function updateShadowOverlay(buildings, sunPos, show) {
+  if (!isMapReady || !map.getSource('shadows')) return;
+
+  if (!show || !buildings || buildings.length === 0 ||
+      !sunPos.isUp || sunPos.altitudeDeg < 2) {
+    map.getSource('shadows').setData(_emptyGeoJSON());
+    return;
+  }
+
+  const features = [];
+  for (const building of buildings) {
+    const shadow = _computeShadowPolygon(building, sunPos);
+    if (shadow) features.push(shadow);
+  }
+
+  map.getSource('shadows').setData({ type: 'FeatureCollection', features });
+}
+
+function _computeShadowPolygon(building, sunPos) {
+  // Shadow direction is OPPOSITE to sun bearing
+  const shadowBearingDeg = (sunPos.bearing + 180) % 360;
+
+  // Shadow length on the ground (metres): h / tan(alt). Cap at 300 m.
+  const shadowLengthM = Math.min(
+    building.height / Math.tan(sunPos.altitude),
+    300
+  );
+  if (shadowLengthM < 1) return null;
+
+  const shadowLengthKm = shadowLengthM / 1000;
+  const origRing = building.polygon.geometry.coordinates[0];
+
+  // Translate every vertex in the shadow direction
+  const shadowRing = origRing.map(([lon, lat]) => {
+    try {
+      return turf.destination(
+        turf.point([lon, lat]), shadowLengthKm, shadowBearingDeg
+      ).geometry.coordinates;
+    } catch { return [lon, lat]; }
+  });
+
+  // Convex hull of original + shadow vertices gives the full shadow footprint
+  try {
+    const allPts = [...origRing, ...shadowRing].map(c => turf.point(c));
+    const hull = turf.convex(turf.featureCollection(allPts));
+    return hull;   // may be null if all pts are collinear
+  } catch {
+    // Fallback: just the translated polygon
+    try { return turf.polygon([shadowRing]); } catch { return null; }
+  }
 }
 
 // ─── Data conversion ───────────────────────────────────────────────────────

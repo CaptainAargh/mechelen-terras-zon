@@ -8,13 +8,17 @@ const SUN_UPDATE_MS       = 5 * 60 * 1000;
 let allBars        = [];
 let allBuildings   = [];
 let buildingsReady = false;
-let openFilter     = 'all'; // 'all' | 'open'
+let openFilter     = 'all';   // 'all' | 'open'
+let shadowsEnabled = false;
 
 // ─── Init ──────────────────────────────────────────────────────────────────
 
 async function init() {
   initMap();
   showLoading(true, 'Terrassen laden…');
+  // Mark shadow toggle as pending until buildings load
+  const shadowText = document.getElementById('shadow-toggle-text');
+  if (shadowText) shadowText.textContent = 'Toon zonschaduwen (laden…)';
 
   try {
     allBars = await loadBarsInstant();
@@ -83,6 +87,11 @@ async function fetchBuildingsBackground() {
       buildingsReady = true;
       cacheSet(CACHE_KEY_BUILDINGS, buildings);
       console.log(`${allBuildings.length} gebouwen geladen`);
+      // Enable shadow toggle label now that buildings are available
+      const shadowText = document.getElementById('shadow-toggle-text');
+      if (shadowText) shadowText.textContent = 'Toon zonschaduwen';
+      const shadowWrap = document.getElementById('shadow-toggle-wrap');
+      if (shadowWrap) shadowWrap.removeAttribute('title');
       runUpdate();
     }
   } catch (err) {
@@ -123,6 +132,7 @@ function runUpdate() {
   const { sunnyCount, shownCount } = updateBarMarkers(allBars, f);
   updateInfoPanel(sunPos, sunnyCount, shownCount, now);
   updateSunCompass(sunPos);
+  updateShadowOverlay(buildingsReady ? allBuildings : [], sunPos, shadowsEnabled);
 
   document.getElementById('last-updated').textContent =
     `Bijgewerkt om ${now.toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit' })}`;
@@ -287,6 +297,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('filter-sunny').addEventListener('change', refilter);
   document.getElementById('show-buildings').addEventListener('change', e => {
     toggleBuildings(e.target.checked);
+  });
+
+  document.getElementById('show-shadows').addEventListener('change', e => {
+    shadowsEnabled = e.target.checked;
+    runUpdate();
   });
 
   // Open/all pill buttons

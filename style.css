@@ -448,7 +448,7 @@ html, body {
 /* ─── Sun compass overlay ──────────────────────────────── */
 #sun-compass {
   position: fixed;
-  bottom: 120px;   /* above MapLibre navigation controls */
+  top: 16px;
   right: 16px;
   z-index: 1000;
   background: var(--panel);
