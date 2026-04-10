@@ -4,20 +4,25 @@
 const OVERPASS_MIRRORS = [
   'https://overpass-api.de/api/interpreter',
   'https://overpass.kumi.systems/api/interpreter',
-  'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
   'https://overpass.openstreetmap.ru/api/interpreter',
 ];
 
+// Bounding box: covers Mechelen city centre
+// south, west, north, east
+const BBOX      = '51.016,4.465,51.035,4.490';
+// Tighter box for buildings (expensive query — smaller area = faster)
+const BBOX_BLDG = '51.024,4.474,51.031,4.488';
+
 /**
  * POST a query to the first Overpass mirror that responds successfully.
- * Tries each mirror with a 15-second timeout before moving to the next.
+ * Tries each mirror with the given per-mirror timeout before moving on.
+ * Returns null instead of throwing if all mirrors fail.
  */
-async function overpassFetch(query) {
-  let lastErr;
+async function overpassFetch(query, timeoutMs = 20000) {
   for (const url of OVERPASS_MIRRORS) {
     try {
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 15000);
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
       const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
@@ -26,33 +31,48 @@ async function overpassFetch(query) {
       });
       clearTimeout(timer);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return await res.json();
+      const data = await res.json();
+      if (!Array.isArray(data.elements)) throw new Error('Onverwacht antwoord');
+      return data;
     } catch (err) {
-      console.warn(`Overpass mirror ${url} failed:`, err.message);
-      lastErr = err;
+      console.warn(`Overpass mirror ${url} mislukt:`, err.message);
     }
   }
-  throw new Error(`Alle Overpass mirrors mislukt: ${lastErr?.message}`);
+  return null; // all mirrors failed — caller handles gracefully
 }
 
-// Bounding box: covers Mechelen city centre + surrounding neighbourhoods
-// south, west, north, east
-const BBOX = '51.016,4.465,51.035,4.490';
+// ─── Bars ──────────────────────────────────────────────────────────────────
 
 /**
- * Fetch bars/pubs/cafes with outdoor_seating=yes from Overpass API.
- * Returns an array of bar objects: { id, name, lat, lon, ... }
+ * Try to fetch live bars from Overpass.
+ * Returns parsed bar array, or null if all mirrors failed.
  */
 async function fetchBarsWithTerraces() {
-  const query = `[out:json][timeout:30];
+  const query = `[out:json][timeout:25];
 (
   node["amenity"~"bar|pub|cafe"]["outdoor_seating"="yes"](${BBOX});
   way["amenity"~"bar|pub|cafe"]["outdoor_seating"="yes"](${BBOX});
 );
 out body geom;`;
 
-  const data = await overpassFetch(query);
+  const data = await overpassFetch(query, 20000);
+  if (!data) return null;
   return parseOsmBars(data.elements);
+}
+
+/**
+ * Load bars from the bundled static snapshot (data/osm_bars.json).
+ * Falls back to empty array if the file is missing.
+ */
+async function fetchStaticBars() {
+  try {
+    const res = await fetch('data/osm_bars.json');
+    if (!res.ok) return [];
+    const data = await res.json();
+    return parseOsmBars(data.elements || []);
+  } catch {
+    return [];
+  }
 }
 
 function parseOsmBars(elements) {
@@ -63,7 +83,6 @@ function parseOsmBars(elements) {
         lat = el.lat;
         lon = el.lon;
       } else if (el.type === 'way' && el.geometry && el.geometry.length > 0) {
-        // Use centroid of way geometry
         lat = el.geometry.reduce((s, n) => s + n.lat, 0) / el.geometry.length;
         lon = el.geometry.reduce((s, n) => s + n.lon, 0) / el.geometry.length;
       }
@@ -81,7 +100,7 @@ function parseOsmBars(elements) {
         website: tags.website || tags['contact:website'] || null,
         opening_hours: tags.opening_hours || null,
         source: 'osm',
-        inSun: false,
+        inSun: null, // null = unknown (no buildings yet)
       };
     })
     .filter(Boolean);
@@ -96,18 +115,19 @@ function buildAddress(tags) {
   return parts.length > 0 ? parts.join(' ') : null;
 }
 
+// ─── Buildings ─────────────────────────────────────────────────────────────
+
 /**
- * Fetch building footprints from Overpass API.
- * Returns an array of building objects: { id, height, polygon (turf Feature) }
+ * Try to fetch building footprints from Overpass.
+ * Returns parsed building array, or null if all mirrors failed.
  */
 async function fetchBuildings() {
-  const query = `[out:json][timeout:60];
-(
-  way["building"](${BBOX});
-);
+  const query = `[out:json][timeout:45];
+way["building"](${BBOX_BLDG});
 out body geom;`;
 
-  const data = await overpassFetch(query);
+  const data = await overpassFetch(query, 30000);
+  if (!data) return null;
   return parseOsmBuildings(data.elements);
 }
 
@@ -117,18 +137,12 @@ function parseOsmBuildings(elements) {
   for (const el of elements) {
     if (el.type !== 'way' || !el.geometry || el.geometry.length < 4) continue;
 
-    // Build coordinate ring [lon, lat] (GeoJSON order)
     const coords = el.geometry.map(n => [n.lon, n.lat]);
-
-    // Close ring if not already closed
     const first = coords[0], last = coords[coords.length - 1];
-    if (first[0] !== last[0] || first[1] !== last[1]) {
-      coords.push([first[0], first[1]]);
-    }
+    if (first[0] !== last[0] || first[1] !== last[1]) coords.push([first[0], first[1]]);
 
-    // Determine height
     const tags = el.tags || {};
-    let height = 8; // default ~2-3 storey
+    let height = 8;
     if (tags.height) {
       const h = parseFloat(tags.height);
       if (!isNaN(h) && h > 0) height = h;
@@ -141,14 +155,10 @@ function parseOsmBuildings(elements) {
     try {
       polygon = turf.polygon([coords]);
     } catch {
-      continue; // skip malformed polygons
+      continue;
     }
 
-    buildings.push({
-      id: `osm_way_${el.id}`,
-      height,
-      polygon,
-    });
+    buildings.push({ id: `osm_way_${el.id}`, height, polygon });
   }
 
   return buildings;

@@ -57,13 +57,19 @@ function updateBarMarkers(bars, onlySunny) {
 }
 
 function createBarMarker(bar) {
-  const isSun   = bar.inSun;
-  const isNight = bar._isNight;
+  const isSun     = bar.inSun;
+  const isNight   = bar._isNight;
+  const isUnknown = isSun === null && !isNight;
 
   let fillColor, strokeColor, cssClass;
   if (isNight) {
     fillColor   = '#444866';
     strokeColor = '#333';
+    cssClass    = '';
+  } else if (isUnknown) {
+    // Shadow data not yet available — neutral grey with dashed border
+    fillColor   = '#5a6080';
+    strokeColor = '#8891b4';
     cssClass    = '';
   } else if (isSun) {
     fillColor   = '#FFB800';
@@ -94,11 +100,14 @@ function createBarMarker(bar) {
 }
 
 function buildPopupHtml(bar) {
-  const isNight = bar._isNight;
+  const isNight   = bar._isNight;
+  const isUnknown = bar.inSun === null && !isNight;
 
   let statusHtml;
   if (isNight) {
     statusHtml = '<span class="status-night">🌙 Nacht — zon onder horizon</span>';
+  } else if (isUnknown) {
+    statusHtml = '<span class="status-night">⏳ Schaduwdata laden…</span>';
   } else if (bar.inSun) {
     statusHtml = '<span class="status-sun">☀️ Terras in de zon</span>';
   } else {

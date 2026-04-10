@@ -1,104 +1,146 @@
 // ─── Main application ──────────────────────────────────────────────────────
 
-// sessionStorage keys
-const CACHE_KEY_BARS      = 'mtz_bars_v1';
-const CACHE_KEY_BUILDINGS = 'mtz_buildings_v1';
-const CACHE_DURATION_MS   = 30 * 60 * 1000; // 30 minutes
+const CACHE_KEY_BARS      = 'mtz_bars_v2';
+const CACHE_KEY_BUILDINGS = 'mtz_buildings_v2';
+const CACHE_DURATION_MS   = 30 * 60 * 1000; // 30 min
 
-// Update interval (ms)
-const SUN_UPDATE_MS = 5 * 60 * 1000; // 5 minutes
+const SUN_UPDATE_MS = 5 * 60 * 1000; // 5 min
 
 let allBars      = [];
-let allBuildings = [];
-let sunUpdateTimer = null;
+let allBuildings = []; // may stay empty if Overpass is unavailable
+let buildingsReady = false;
 
-// ─── Initialisation ────────────────────────────────────────────────────────
+// ─── Init ──────────────────────────────────────────────────────────────────
 
 async function init() {
   initMap();
-  showLoading(true, 'Terrassen & gebouwen ophalen…');
+
+  // ── Phase 1: load bars instantly from bundled static snapshot ──
+  showLoading(true, 'Terrassen laden…');
+  try {
+    allBars = await loadBarsInstant();
+    console.log(`${allBars.length} terrassen geladen (statisch)`);
+  } catch (err) {
+    console.error('Kon statische bars niet laden:', err);
+  }
+
+  // Render bars right away (shadow status unknown → grey markers)
+  runUpdate();
+  showLoading(false);
+
+  // Start clock + periodic sun recalc
+  setInterval(tickClock, 1000);
+  setInterval(runUpdate, SUN_UPDATE_MS);
+
+  // ── Phase 2: fetch live data + buildings in background ──
+  loadLiveDataInBackground();
+}
+
+// ─── Phase 1: instant bar loading ─────────────────────────────────────────
+
+async function loadBarsInstant() {
+  // 1. Try sessionStorage cache (has Overpass data from a previous visit)
+  const cached = cacheGet(CACHE_KEY_BARS);
+  if (cached) return cached;
+
+  // 2. Fall back to bundled static JSON + manual additions
+  const [staticBars, manualBars] = await Promise.all([
+    fetchStaticBars(),
+    loadManualBars(),
+  ]);
+  return mergeBars(staticBars, manualBars);
+}
+
+// ─── Phase 2: background live refresh ─────────────────────────────────────
+
+async function loadLiveDataInBackground() {
+  // Try buildings first (needed for shadow calc)
+  fetchBuildingsBackground();
+
+  // Try live bar refresh from Overpass (non-blocking)
+  try {
+    const cachedBars = cacheGet(CACHE_KEY_BARS);
+    if (!cachedBars) {
+      // Only attempt live fetch if we don't have a fresh cache
+      const liveBars = await fetchBarsWithTerraces();
+      if (liveBars) {
+        const manualBars = await loadManualBars();
+        const merged = mergeBars(liveBars, manualBars);
+        cacheSet(CACHE_KEY_BARS, merged);
+        allBars = merged;
+        console.log(`${allBars.length} terrassen bijgewerkt via Overpass`);
+        runUpdate();
+      }
+    }
+  } catch (err) {
+    console.warn('Live bar update mislukt (niet erg):', err.message);
+  }
+}
+
+async function fetchBuildingsBackground() {
+  // Use cached buildings if available
+  const cached = cacheGet(CACHE_KEY_BUILDINGS);
+  if (cached) {
+    allBuildings  = cached;
+    buildingsReady = true;
+    console.log(`${allBuildings.length} gebouwen uit cache`);
+    runUpdate();
+    updateShadowStatus();
+    return;
+  }
+
+  setBuildingStatus('Gebouwen ophalen voor schaduwberekening…');
 
   try {
-    // Fetch bars and buildings in parallel, using sessionStorage cache
-    [allBars, allBuildings] = await Promise.all([
-      loadBars(),
-      loadBuildings(),
-    ]);
-
-    console.log(`Geladen: ${allBars.length} terrassen, ${allBuildings.length} gebouwen`);
-
-    // Render building outlines (hidden by default, toggle via checkbox)
-    renderBuildings(allBuildings);
-
-    // Initial sun status computation + map render
-    runUpdate();
-
-    // Schedule regular sun-status updates
-    sunUpdateTimer = setInterval(runUpdate, SUN_UPDATE_MS);
-
-    // Tick the clock every second
-    setInterval(tickClock, 1000);
-
+    const buildings = await fetchBuildings();
+    if (buildings && buildings.length > 0) {
+      allBuildings   = buildings;
+      buildingsReady = true;
+      cacheSet(CACHE_KEY_BUILDINGS, buildings);
+      console.log(`${allBuildings.length} gebouwen geladen`);
+      runUpdate();
+      updateShadowStatus();
+    } else {
+      setBuildingStatus('Schaduwberekening tijdelijk niet beschikbaar');
+      console.warn('Gebouwen niet beschikbaar — schaduw wordt overgeslagen');
+    }
   } catch (err) {
-    console.error(err);
-    showError(`Kon data niet laden: ${err.message}`);
-  } finally {
-    showLoading(false);
+    setBuildingStatus('Schaduwberekening tijdelijk niet beschikbaar');
+    console.warn('Gebouwen ophalen mislukt:', err.message);
   }
 }
 
 // ─── Update loop ───────────────────────────────────────────────────────────
 
 function runUpdate() {
-  const now = new Date();
+  const now    = new Date();
   const sunPos = getSunPosition(now);
   const onlySunny = document.getElementById('filter-sunny').checked;
 
-  // Compute sun status for every bar
   for (const bar of allBars) {
     bar._isNight = !sunPos.isUp;
-    bar.inSun    = sunPos.isUp ? isTerraceInSun(bar, allBuildings, sunPos) : false;
+    if (!sunPos.isUp) {
+      bar.inSun = false;
+    } else if (buildingsReady) {
+      bar.inSun = isTerraceInSun(bar, allBuildings, sunPos);
+    } else {
+      bar.inSun = null; // unknown until buildings load
+    }
   }
 
   const sunnyCount = updateBarMarkers(allBars, onlySunny);
   updateInfoPanel(sunPos, sunnyCount, now);
+
   document.getElementById('last-updated').textContent =
     `Bijgewerkt om ${now.toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit' })}`;
 }
 
-// ─── Data loading (with cache) ─────────────────────────────────────────────
-
-async function loadBars() {
-  const cached = cacheGet(CACHE_KEY_BARS);
-  if (cached) {
-    console.log('Terrassen uit cache geladen');
-    return cached;
-  }
-
-  const [osmBars, manualBars] = await Promise.all([
-    fetchBarsWithTerraces(),
-    loadManualBars(),
-  ]);
-
-  const merged = mergeBars(osmBars, manualBars);
-  cacheSet(CACHE_KEY_BARS, merged);
-  return merged;
+// Called after buildings load to trigger a shadow recalc without changing the clock
+function updateShadowStatus() {
+  runUpdate();
 }
 
-async function loadBuildings() {
-  const cached = cacheGet(CACHE_KEY_BUILDINGS);
-  if (cached) {
-    // Re-create turf polygon objects from plain GeoJSON (lost during JSON serialisation)
-    return cached.map(b => ({
-      ...b,
-      polygon: b.polygon, // turf accepts plain GeoJSON Feature objects
-    }));
-  }
-
-  const buildings = await fetchBuildings();
-  cacheSet(CACHE_KEY_BUILDINGS, buildings);
-  return buildings;
-}
+// ─── Data helpers ──────────────────────────────────────────────────────────
 
 async function loadManualBars() {
   try {
@@ -110,50 +152,30 @@ async function loadManualBars() {
   }
 }
 
-/**
- * Merge OSM bars with manually added bars.
- * Manual bars within 30m of an OSM bar are considered duplicates and skipped.
- */
-function mergeBars(osmBars, manualBars) {
-  const result = [...osmBars];
-
-  for (const manual of manualBars) {
-    const isDuplicate = osmBars.some(osm => {
+function mergeBars(primary, manual) {
+  const result = [...primary];
+  for (const m of manual) {
+    const dup = primary.some(p => {
       try {
-        const dist = turf.distance(
-          turf.point([osm.lon, osm.lat]),
-          turf.point([manual.lon, manual.lat]),
+        return turf.distance(
+          turf.point([p.lon, p.lat]),
+          turf.point([m.lon, m.lat]),
           { units: 'meters' }
-        );
-        return dist < 30;
-      } catch {
-        return false;
-      }
+        ) < 30;
+      } catch { return false; }
     });
-
-    if (!isDuplicate) {
-      result.push({
-        ...manual,
-        inSun: false,
-        _isNight: false,
-        source: 'manual',
-      });
-    }
+    if (!dup) result.push({ ...m, inSun: null, _isNight: false, source: 'manual' });
   }
-
   return result;
 }
 
 // ─── UI helpers ────────────────────────────────────────────────────────────
 
 function tickClock() {
-  const now = new Date();
   const el = document.getElementById('current-time');
-  if (el) {
-    el.textContent = now.toLocaleTimeString('nl-BE', {
-      hour: '2-digit', minute: '2-digit', second: '2-digit',
-    });
-  }
+  if (el) el.textContent = new Date().toLocaleTimeString('nl-BE', {
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+  });
 }
 
 function updateInfoPanel(sunPos, sunnyCount, now) {
@@ -167,20 +189,26 @@ function updateInfoPanel(sunPos, sunnyCount, now) {
     sunInfoEl.textContent = '🌙 Zon staat onder de horizon';
     sunInfoEl.style.color = '#8891b4';
   } else {
-    const dir = bearingToLabel(sunPos.bearing);
     sunInfoEl.textContent =
-      `☀️ ${Math.round(sunPos.altitudeDeg)}° hoogte · richting ${dir}`;
+      `☀️ ${Math.round(sunPos.altitudeDeg)}° hoogte · richting ${bearingToLabel(sunPos.bearing)}`;
     sunInfoEl.style.color = '';
   }
 
   const countEl = document.getElementById('sunny-count');
   if (!sunPos.isUp) {
     countEl.textContent = `${total} terrassen gevonden · momenteel nacht`;
+  } else if (!buildingsReady) {
+    countEl.textContent = `${total} terrassen gevonden · schaduw laden…`;
   } else if (total === 0) {
     countEl.textContent = 'Geen terrassen gevonden';
   } else {
     countEl.textContent = `${sunnyCount} van ${total} terrassen in de zon`;
   }
+}
+
+function setBuildingStatus(msg) {
+  const el = document.getElementById('sunny-count');
+  if (el) el.textContent = msg;
 }
 
 function showLoading(show, text) {
@@ -193,13 +221,6 @@ function showLoading(show, text) {
   }
 }
 
-function showError(msg) {
-  const el = document.getElementById('error');
-  if (!el) return;
-  el.textContent = msg;
-  el.style.display = 'block';
-}
-
 // ─── SessionStorage cache ──────────────────────────────────────────────────
 
 function cacheGet(key) {
@@ -209,28 +230,22 @@ function cacheGet(key) {
     const { data, ts } = JSON.parse(raw);
     if (Date.now() - ts > CACHE_DURATION_MS) return null;
     return data;
-  } catch {
-    return null;
-  }
+  } catch { return null; }
 }
 
 function cacheSet(key, data) {
   try {
     sessionStorage.setItem(key, JSON.stringify({ data, ts: Date.now() }));
-  } catch {
-    // sessionStorage full or unavailable — ignore
-  }
+  } catch { /* storage full — ignore */ }
 }
 
-// ─── Event wiring ──────────────────────────────────────────────────────────
+// ─── Events ────────────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
   init();
 
   document.getElementById('filter-sunny').addEventListener('change', () => {
-    // Re-render markers with new filter, no recalculation needed
-    const onlySunny = document.getElementById('filter-sunny').checked;
-    updateBarMarkers(allBars, onlySunny);
+    updateBarMarkers(allBars, document.getElementById('filter-sunny').checked);
   });
 
   document.getElementById('show-buildings').addEventListener('change', e => {

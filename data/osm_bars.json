@@ -1,0 +1,89 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-04-10T08:25:00Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "node",
+  "id": 939114891,
+  "lat": 51.0288259,
+  "lon": 4.4853174,
+  "tags": {
+    "addr:housenumber": "8",
+    "addr:street": "Keizerstraat",
+    "amenity": "pub",
+    "changing_table": "no",
+    "entrance:kerb:height": "0.5",
+    "entrance:ramp": "no",
+    "entrance:step_count": "3",
+    "entrance:width": "0.85",
+    "internet_access": "wlan",
+    "name": "Hanekeef",
+    "outdoor_seating": "yes",
+    "wheelchair:turning_circle": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 6878380185,
+  "lat": 51.0268650,
+  "lon": 4.4763264,
+  "tags": {
+    "amenity": "cafe",
+    "contact:website": "http://crema.be",
+    "cuisine": "coffee_shop",
+    "entrance:kerb:height": "0",
+    "entrance:width": "1",
+    "name": "Créma",
+    "opening_hours": "We-Fr 09:00-16:00; Sa-Su 09:00-17:00",
+    "outdoor_seating": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9221544240,
+  "lat": 51.0265763,
+  "lon": 4.4787191,
+  "tags": {
+    "addr:housenumber": "35",
+    "addr:street": "IJzerenleen",
+    "amenity": "cafe",
+    "brand": "Le Pain Quotidien",
+    "brand:wikidata": "Q2046903",
+    "cuisine": "coffee_shop",
+    "internet_access": "wlan",
+    "name": "Le Pain Quotidien",
+    "opening_hours": "Mo-Sa 09:00-19:00; Su 08:00-18:00",
+    "outdoor_seating": "yes",
+    "shop": "bakery",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 10921043833,
+  "lat": 51.0270583,
+  "lon": 4.4791448,
+  "tags": {
+    "addr:city": "Mechelen",
+    "addr:housenumber": "13",
+    "addr:postcode": "2800",
+    "addr:street": "IJzerenleen",
+    "amenity": "cafe",
+    "cuisine": "coffee_shop;bagel",
+    "delivery": "yes",
+    "internet_access": "wlan",
+    "name": "Wasbar",
+    "opening_hours": "Mo-Su 09:00-21:00; PH off",
+    "outdoor_seating": "yes",
+    "phone": "+32 15 65 42 90",
+    "website": "https://www.wasbar.be/restaurants/wasbar-mechelen"
+  }
+}
+
+  ]
+}
