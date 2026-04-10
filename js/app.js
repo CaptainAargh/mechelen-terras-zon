@@ -173,7 +173,7 @@ async function loadManualBars() {
     const arr = await res.json();
     return arr.map(b => ({
       ...b,
-      terrace: b.terrace || (b.amenity === 'bar' || b.amenity === 'pub' ? 'likely' : 'maybe'),
+      terrace: b.terrace || terraceConfidence({ amenity: b.amenity, outdoor_seating: b.outdoor_seating }),
       inSun: null, isOpen: null,
     }));
   } catch {

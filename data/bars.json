@@ -243,5 +243,63 @@
     "amenity": "bar",
     "address": "Onze-Lieve-Vrouwestraat, Mechelen",
     "source": "manual"
+  },
+  {
+    "id": "manual_la_vigna",
+    "name": "La Vigna",
+    "lat": 51.019539,
+    "lon": 4.4821065,
+    "amenity": "restaurant",
+    "address": "Hendrik Consciencestraat 22, Mechelen",
+    "outdoor_seating": "yes",
+    "source": "thefork"
+  },
+  {
+    "id": "manual_lameau",
+    "name": "Lam'eau",
+    "lat": 51.0260164,
+    "lon": 4.4763617,
+    "amenity": "restaurant",
+    "address": "Vismarkt, Mechelen",
+    "outdoor_seating": "yes",
+    "source": "tripadvisor"
+  },
+  {
+    "id": "manual_ronda",
+    "name": "Ronda",
+    "lat": 51.0265089,
+    "lon": 4.4768784,
+    "amenity": "bar",
+    "address": "Vismarkt 10, Mechelen",
+    "outdoor_seating": "yes",
+    "source": "tripadvisor"
+  },
+  {
+    "id": "manual_cosma",
+    "name": "Cosma",
+    "lat": 51.0283055,
+    "lon": 4.4827606,
+    "amenity": "restaurant",
+    "address": "Befferstraat 24, Mechelen",
+    "outdoor_seating": "yes",
+    "source": "thefork"
+  },
+  {
+    "id": "manual_antverpia",
+    "name": "Antverpia",
+    "lat": 51.02680,
+    "lon": 4.47680,
+    "amenity": "bar",
+    "address": "IJzerenleen, Mechelen",
+    "source": "manual"
+  },
+  {
+    "id": "manual_de_korenmet",
+    "name": "De Korenmet",
+    "lat": 51.02710,
+    "lon": 4.47820,
+    "amenity": "bar",
+    "address": "Korenmarkt, Mechelen",
+    "source": "manual"
   }
 ]
