@@ -76,27 +76,52 @@ function _onMapLoad() {
     data: _emptyGeoJSON(),
   });
 
-  // Shadow fill — deep indigo-blue, clearly visible over light map tiles
+  // Build a diagonal-stripe hatch pattern for the shadow fill.
+  // Tile: 14×14 px — dark blue base + bright 45° lines.
+  _addHatchPattern();
+
+  // Layer 1 – solid tint (gives the zone a blue cast)
   map.addLayer({
-    id: 'shadows-fill',
+    id: 'shadows-tint',
     type: 'fill',
     source: 'shadows',
     paint: {
-      'fill-color': '#1a2880',
-      'fill-opacity': 0.55,
-      'fill-outline-color': 'rgba(80, 120, 255, 0.0)',  // no hairline (use line layer)
+      'fill-color': '#0d1a6e',
+      'fill-opacity': 0.45,
     },
   }, firstSymbol);
 
-  // Shadow edge highlight — thin bright-blue line so the boundary is crisp
+  // Layer 2 – hatched pattern on top (adds visible texture)
+  map.addLayer({
+    id: 'shadows-hatch',
+    type: 'fill',
+    source: 'shadows',
+    paint: {
+      'fill-pattern': 'shadow-hatch',
+      'fill-opacity': 0.85,
+    },
+  }, firstSymbol);
+
+  // Layer 3 – soft outer glow (penumbra feel)
+  map.addLayer({
+    id: 'shadows-glow',
+    type: 'line',
+    source: 'shadows',
+    paint: {
+      'line-color': 'rgba(80, 120, 255, 0.50)',
+      'line-width': 6,
+      'line-blur': 5,
+    },
+  }, firstSymbol);
+
+  // Layer 4 – sharp inner edge (crisp boundary)
   map.addLayer({
     id: 'shadows-line',
     type: 'line',
     source: 'shadows',
     paint: {
-      'line-color': 'rgba(100, 150, 255, 0.65)',
-      'line-width': 1.2,
-      'line-blur': 0.5,
+      'line-color': 'rgba(130, 170, 255, 0.90)',
+      'line-width': 1.5,
     },
   }, firstSymbol);
 
@@ -289,6 +314,36 @@ function updateShadowOverlay(buildings, sunPos, show) {
   }
 
   map.getSource('shadows').setData({ type: 'FeatureCollection', features });
+}
+
+function _addHatchPattern() {
+  if (map.hasImage('shadow-hatch')) return;
+
+  // 14×14 px tile: semi-transparent dark-blue base + bright 45° diagonal stripe
+  const sz  = 14;
+  const cv  = document.createElement('canvas');
+  cv.width  = sz;
+  cv.height = sz;
+  const ctx = cv.getContext('2d');
+
+  // Base — slightly transparent dark blue
+  ctx.fillStyle = 'rgba(18, 35, 130, 0.60)';
+  ctx.fillRect(0, 0, sz, sz);
+
+  // Diagonal lines at 45° (top-right → bottom-left direction)
+  ctx.strokeStyle = 'rgba(110, 160, 255, 0.85)';
+  ctx.lineWidth   = 2;
+  ctx.lineCap     = 'square';
+  // Draw enough repetitions to fully cover the tile including wrap-around
+  for (let offset = -sz; offset <= sz * 2; offset += 9) {
+    ctx.beginPath();
+    ctx.moveTo(offset,      0);
+    ctx.lineTo(offset + sz, sz);
+    ctx.stroke();
+  }
+
+  const data = ctx.getImageData(0, 0, sz, sz);
+  map.addImage('shadow-hatch', { width: sz, height: sz, data: data.data });
 }
 
 function _computeShadowPolygon(building, sunPos) {
