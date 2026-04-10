@@ -22,6 +22,10 @@ function initMap() {
 
   map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'bottom-right');
   map.on('load', _onMapLoad);
+  // Silence "image not found" warnings from the OpenFreeMap liberty style sprite
+  map.on('styleimagemissing', id => {
+    map.addImage(id, { width: 1, height: 1, data: new Uint8Array(4) });
+  });
 }
 
 function _onMapLoad() {
@@ -40,7 +44,8 @@ function _onMapLoad() {
       minzoom: 14,
       paint: {
         'fill-extrusion-color': [
-          'interpolate', ['linear'], ['coalesce', ['get', 'render_height'], 8],
+          'interpolate', ['linear'],
+          ['to-number', ['coalesce', ['get', 'render_height'], 8], 8],
            0, '#1e2240',
           10, '#252b4d',
           20, '#2e3660',
@@ -48,13 +53,13 @@ function _onMapLoad() {
         ],
         'fill-extrusion-height': [
           'interpolate', ['linear'], ['zoom'],
-          14.9, 0, 15.1,
-          ['coalesce', ['get', 'render_height'], 8],
+          14.9, 0,
+          15.1, ['to-number', ['coalesce', ['get', 'render_height'], 8], 8],
         ],
         'fill-extrusion-base': [
           'interpolate', ['linear'], ['zoom'],
-          14.9, 0, 15.1,
-          ['coalesce', ['get', 'render_min_height'], 0],
+          14.9, 0,
+          15.1, ['to-number', ['coalesce', ['get', 'render_min_height'], 0], 0],
         ],
         'fill-extrusion-opacity': 0.85,
       },
@@ -67,15 +72,29 @@ function _onMapLoad() {
     data: _emptyGeoJSON(),
   });
 
+  // Shadow fill — deep indigo-blue, clearly visible over light map tiles
   map.addLayer({
     id: 'shadows-fill',
     type: 'fill',
     source: 'shadows',
     paint: {
-      'fill-color': '#05081a',
-      'fill-opacity': 0.48,
+      'fill-color': '#1a2880',
+      'fill-opacity': 0.55,
+      'fill-outline-color': 'rgba(80, 120, 255, 0.0)',  // no hairline (use line layer)
     },
-  }, firstSymbol);  // insert below labels/symbols
+  }, firstSymbol);
+
+  // Shadow edge highlight — thin bright-blue line so the boundary is crisp
+  map.addLayer({
+    id: 'shadows-line',
+    type: 'line',
+    source: 'shadows',
+    paint: {
+      'line-color': 'rgba(100, 150, 255, 0.65)',
+      'line-width': 1.2,
+      'line-blur': 0.5,
+    },
+  }, firstSymbol);
 
   // ── Bar data source ────────────────────────────────────────────────────
   map.addSource('bars', {
