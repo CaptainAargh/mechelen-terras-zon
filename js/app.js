@@ -5,9 +5,6 @@ const CACHE_KEY_BUILDINGS = 'mtz_buildings_v3';
 const CACHE_DURATION_MS   = 30 * 60 * 1000; // 30 min
 const SUN_UPDATE_MS       = 5 * 60 * 1000;  // 5 min
 
-// Confidence rank: higher = more certain
-const CONFIDENCE_RANK = { yes: 3, likely: 2, maybe: 1, no: 0 };
-
 let allBars        = [];
 let allBuildings   = [];
 let buildingsReady = false;
