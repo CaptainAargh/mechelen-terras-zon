@@ -37,11 +37,17 @@ function _onMapLoad() {
   const firstSymbol = map.getStyle().layers.find(l => l.type === 'symbol')?.id;
 
   // ── 3D building extrusion ──────────────────────────────────────────────
-  // The Liberty style already renders buildings; we override with a richer
-  // extrusion that uses a height-based colour gradient.
-  if (!map.getLayer('building-3d')) {
-    map.addLayer({
-      id: 'building-3d-custom',
+  // The OpenFreeMap liberty style ships its own fill-extrusion building layer
+  // that uses bare ["get","render_height"] without a null guard — causing
+  // "Expected number, found null" errors in the tile worker.
+  // We remove ALL base-style fill-extrusion building layers and replace them
+  // with our single null-safe version.
+  map.getStyle().layers
+    .filter(l => l['source-layer'] === 'building' && l.type === 'fill-extrusion')
+    .forEach(l => map.removeLayer(l.id));
+
+  map.addLayer({
+    id: 'building-3d-custom',
       source: 'openmaptiles',
       'source-layer': 'building',
       type: 'fill-extrusion',
@@ -68,7 +74,6 @@ function _onMapLoad() {
         'fill-extrusion-opacity': 0.85,
       },
     }, firstSymbol);
-  }
 
   // ── Shadow overlay source ──────────────────────────────────────────────
   map.addSource('shadows', {
