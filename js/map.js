@@ -1,149 +1,296 @@
-// ─── Leaflet map management ────────────────────────────────────────────────
-
-let map;
-let barLayerGroup;
-let buildingLayerGroup;
+// ─── MapLibre GL map management ───────────────────────────────────────────
 
 const CONFIDENCE_RANK = { yes: 3, likely: 2, maybe: 1, no: 0 };
 
+let map;
+let isMapReady   = false;
+let pendingBars  = null; // queued update before map is ready
+let glowFrame    = null;
+
+// ─── Init ─────────────────────────────────────────────────────────────────
+
 function initMap() {
-  map = L.map('map', {
-    center: [51.0257, 4.4776],
-    zoom: 15,
-    zoomControl: true,
+  map = new maplibregl.Map({
+    container: 'map',
+    style: 'https://tiles.openfreemap.org/styles/liberty',
+    center: [4.4776, 51.0257],
+    zoom: 15.5,
+    pitch: 50,
+    bearing: -15,
+    antialias: true,
   });
 
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    maxZoom: 19,
-  }).addTo(map);
-
-  barLayerGroup      = L.layerGroup().addTo(map);
-  buildingLayerGroup = L.layerGroup();
+  map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'bottom-right');
+  map.on('load', _onMapLoad);
 }
 
+function _onMapLoad() {
+  // ── 3D building extrusion ──────────────────────────────────────────────
+  // The Liberty style already renders buildings; we override with a richer
+  // extrusion that uses a height-based colour gradient.
+  if (!map.getLayer('building-3d')) {
+    // Find a good insertion point (before labels/symbols)
+    const layers = map.getStyle().layers;
+    const firstSymbol = layers.find(l => l.type === 'symbol')?.id;
+
+    map.addLayer({
+      id: 'building-3d-custom',
+      source: 'openmaptiles',
+      'source-layer': 'building',
+      type: 'fill-extrusion',
+      minzoom: 14,
+      paint: {
+        'fill-extrusion-color': [
+          'interpolate', ['linear'], ['coalesce', ['get', 'render_height'], 8],
+           0, '#1e2240',
+          10, '#252b4d',
+          20, '#2e3660',
+          40, '#374175',
+        ],
+        'fill-extrusion-height': [
+          'interpolate', ['linear'], ['zoom'],
+          14.9, 0, 15.1,
+          ['coalesce', ['get', 'render_height'], 8],
+        ],
+        'fill-extrusion-base': [
+          'interpolate', ['linear'], ['zoom'],
+          14.9, 0, 15.1,
+          ['coalesce', ['get', 'render_min_height'], 0],
+        ],
+        'fill-extrusion-opacity': 0.85,
+      },
+    }, firstSymbol);
+  }
+
+  // ── Bar data source ────────────────────────────────────────────────────
+  map.addSource('bars', {
+    type: 'geojson',
+    data: _emptyGeoJSON(),
+  });
+
+  // Outer glow ring for sunny bars
+  map.addLayer({
+    id: 'bars-glow',
+    type: 'circle',
+    source: 'bars',
+    filter: ['==', ['get', 'inSun'], true],
+    paint: {
+      'circle-radius': 20,
+      'circle-color': '#FFB800',
+      'circle-opacity': 0.15,
+      'circle-blur': 1.2,
+      'circle-stroke-width': 0,
+    },
+  });
+
+  // Main bar dot
+  map.addLayer({
+    id: 'bars-circle',
+    type: 'circle',
+    source: 'bars',
+    paint: {
+      'circle-radius': ['case',
+        ['==', ['get', 'terrace'], 'yes'],    10,
+        ['==', ['get', 'terrace'], 'likely'],  8,
+                                               6,
+      ],
+      'circle-color': ['case',
+        ['get', 'isNight'],       '#444866',
+        ['get', 'inSunUnknown'],  '#5a6080',
+        ['get', 'inSun'],         '#FFB800',
+                                  '#4a5580',
+      ],
+      'circle-stroke-width': ['case',
+        ['==', ['get', 'terrace'], 'yes'], 2.5, 1.5,
+      ],
+      'circle-stroke-color': ['case',
+        ['get', 'inSun'], '#CC8000', '#333a5a',
+      ],
+      'circle-opacity': ['case',
+        ['==', ['get', 'terrace'], 'yes'],    0.97,
+        ['==', ['get', 'terrace'], 'likely'], 0.88,
+                                              0.70,
+      ],
+    },
+  });
+
+  // Bar name label (only for confirmed terraces at high zoom)
+  map.addLayer({
+    id: 'bars-label',
+    type: 'symbol',
+    source: 'bars',
+    filter: ['==', ['get', 'terrace'], 'yes'],
+    minzoom: 15.5,
+    layout: {
+      'text-field': ['get', 'name'],
+      'text-font': ['Noto Sans Regular'],
+      'text-size': 11,
+      'text-offset': [0, 1.4],
+      'text-anchor': 'top',
+      'text-optional': true,
+    },
+    paint: {
+      'text-color': '#FFB800',
+      'text-halo-color': 'rgba(20,24,44,0.85)',
+      'text-halo-width': 2,
+    },
+  });
+
+  // Popup on click
+  map.on('click', 'bars-circle', e => {
+    const props = e.features[0].properties;
+    const coords = e.features[0].geometry.coordinates.slice();
+    new maplibregl.Popup({ maxWidth: '300px', className: 'bar-popup', offset: 10 })
+      .setLngLat(coords)
+      .setHTML(_buildPopupHtml(props))
+      .addTo(map);
+  });
+
+  map.on('mouseenter', 'bars-circle', () => { map.getCanvas().style.cursor = 'pointer'; });
+  map.on('mouseleave', 'bars-circle', () => { map.getCanvas().style.cursor = ''; });
+
+  // Start pulsing glow
+  _animateGlow();
+
+  isMapReady = true;
+  if (pendingBars) { _applyBars(pendingBars.features); pendingBars = null; }
+}
+
+// ─── Glow animation ────────────────────────────────────────────────────────
+
+function _animateGlow() {
+  const t = Date.now() / 800;
+  const opacity = 0.08 + Math.abs(Math.sin(t)) * 0.22;
+  const radius  = 16 + Math.abs(Math.sin(t)) * 8;
+
+  if (map.getLayer('bars-glow')) {
+    map.setPaintProperty('bars-glow', 'circle-opacity', opacity);
+    map.setPaintProperty('bars-glow', 'circle-radius',  radius);
+  }
+  glowFrame = requestAnimationFrame(_animateGlow);
+}
+
+// ─── Public API ────────────────────────────────────────────────────────────
+
 /**
- * Render bar markers based on active filters.
- * @param {Array}  bars
- * @param {{ onlySunny, onlyOpen, minConfidence }} filters
+ * Render bars on the map based on active filters.
  * @returns {{ sunnyCount, shownCount }}
  */
 function updateBarMarkers(bars, filters) {
   const { onlySunny, onlyOpen, minConfidence } = filters;
-  barLayerGroup.clearLayers();
+  let sunnyCount = 0, shownCount = 0;
 
-  let sunnyCount = 0;
-  let shownCount = 0;
-
+  const features = [];
   for (const bar of bars) {
-    // Confidence filter: skip bars below the required confidence level
     const rank = CONFIDENCE_RANK[bar.terrace] ?? 1;
-    if (rank < minConfidence) continue;
-
-    // Hide definitely-no-terrace bars always (rank 0)
-    if (rank === 0) continue;
-
+    if (rank === 0 || rank < minConfidence) continue;
     if (onlySunny && !bar.inSun) continue;
     if (onlyOpen  && bar.isOpen === false) continue;
 
-    createBarMarker(bar).addTo(barLayerGroup);
+    features.push(_barToFeature(bar));
     shownCount++;
     if (bar.inSun) sunnyCount++;
+  }
+
+  if (!isMapReady) {
+    pendingBars = { features };
+  } else {
+    _applyBars(features);
   }
 
   return { sunnyCount, shownCount };
 }
 
-function createBarMarker(bar) {
-  const isSun     = bar.inSun;
-  const isNight   = bar._isNight;
-  const isUnknown = isSun === null && !isNight;
-
-  let fillColor, strokeColor, cssClass;
-  if (isNight) {
-    fillColor = '#444866'; strokeColor = '#333'; cssClass = '';
-  } else if (isUnknown) {
-    fillColor = '#5a6080'; strokeColor = '#8891b4'; cssClass = '';
-  } else if (isSun) {
-    fillColor = '#FFB800'; strokeColor = '#CC8000'; cssClass = 'marker-sunny';
-  } else {
-    fillColor = '#4a5580'; strokeColor = '#333a5a'; cssClass = '';
-  }
-
-  // Adjust radius slightly by confidence
-  const rank = CONFIDENCE_RANK[bar.terrace] ?? 1;
-  const radius = rank === 3 ? 10 : rank === 2 ? 8 : 7;
-
-  const marker = L.circleMarker([bar.lat, bar.lon], {
-    radius,
-    fillColor,
-    color: strokeColor,
-    weight: rank === 3 ? 2.5 : 1.5,
-    opacity: 1,
-    fillOpacity: rank === 3 ? 0.95 : rank === 2 ? 0.85 : 0.65,
-    className: cssClass,
-  });
-
-  marker.bindPopup(buildPopupHtml(bar), { className: 'bar-popup', maxWidth: 280 });
-  return marker;
+function _applyBars(features) {
+  const src = map.getSource('bars');
+  if (src) src.setData({ type: 'FeatureCollection', features });
 }
 
-function buildPopupHtml(bar) {
-  const isNight   = bar._isNight;
-  const isUnknown = bar.inSun === null && !isNight;
+function renderBuildings(_buildings) {
+  // Visual 3D buildings are rendered natively by MapLibre from vector tiles.
+  // The _buildings array is used only for sun/shadow calculation in sun.js.
+}
 
-  let sunHtml;
-  if (isNight)        sunHtml = '<span class="status-night">🌙 Nacht</span>';
-  else if (isUnknown) sunHtml = '<span class="status-night">⏳ Schaduw laden…</span>';
-  else if (bar.inSun) sunHtml = '<span class="status-sun">☀️ Terras in de zon</span>';
-  else                sunHtml = '<span class="status-shade">🌥 Terras in de schaduw</span>';
+function toggleBuildings(show) {
+  if (!map || !isMapReady) return;
+  const vis = show ? 'visible' : 'none';
+  ['building-3d-custom'].forEach(id => {
+    if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', vis);
+  });
+}
 
-  const confidenceLabels = {
+// ─── Data conversion ───────────────────────────────────────────────────────
+
+function _barToFeature(bar) {
+  return {
+    type: 'Feature',
+    geometry: { type: 'Point', coordinates: [bar.lon, bar.lat] },
+    properties: {
+      id:            bar.id,
+      name:          bar.name,
+      amenity:       bar.amenity || 'bar',
+      address:       bar.address || '',
+      opening_hours: bar.opening_hours || '',
+      phone:         bar.phone || '',
+      website:       bar.website || '',
+      terrace:       bar.terrace || 'maybe',
+      inSun:         bar.inSun === true,
+      inSunUnknown:  bar.inSun === null,
+      isNight:       bar._isNight || false,
+      isOpen:        bar.isOpen ?? null,
+    },
+  };
+}
+
+function _emptyGeoJSON() {
+  return { type: 'FeatureCollection', features: [] };
+}
+
+// ─── Popup HTML ────────────────────────────────────────────────────────────
+
+function _buildPopupHtml(p) {
+  const isNight   = p.isNight;
+  const isUnknown = p.inSunUnknown && !isNight;
+
+  let sunBadge;
+  if (isNight)        sunBadge = '<span class="status-night">🌙 Nacht</span>';
+  else if (isUnknown) sunBadge = '<span class="status-night">⏳ Schaduw laden…</span>';
+  else if (p.inSun)   sunBadge = '<span class="status-sun">☀️ Terras in de zon</span>';
+  else                sunBadge = '<span class="status-shade">🌥 Terras in de schaduw</span>';
+
+  const confidenceMap = {
     yes:    '✅ Zeker een terras',
-    likely: '🟡 Waarschijnlijk een terras',
-    maybe:  '⚪ Misschien een terras',
+    likely: '🟡 Waarschijnlijk terras',
+    maybe:  '⚪ Misschien terras',
     no:     '❌ Geen terras',
   };
-  const terraceHtml = `<span class="terrace-badge">${confidenceLabels[bar.terrace] || ''}</span>`;
+  const terraceBadge = `<span class="terrace-badge">${confidenceMap[p.terrace] || ''}</span>`;
 
-  const amenityLabel = { bar: 'Bar', pub: 'Pub', cafe: 'Café', restaurant: 'Restaurant' }[bar.amenity] || 'Bar';
+  const amenityLabel = { bar:'Bar', pub:'Pub', cafe:'Café', restaurant:'Restaurant' }[p.amenity] || 'Bar';
 
   let html = `<div class="popup">
-    <h3>${escapeHtml(bar.name)}</h3>
-    <div class="popup-badges">${sunHtml}${terraceHtml}</div>
-    <p class="address">${amenityLabel}${bar.address ? ' · ' + escapeHtml(bar.address) : ''}</p>`;
+    <h3>${_esc(p.name)}</h3>
+    <div class="popup-badges">${sunBadge}${terraceBadge}</div>
+    <p class="address">${amenityLabel}${p.address ? ' · ' + _esc(p.address) : ''}</p>`;
 
-  if (bar.opening_hours) {
-    const status = openLabel(bar.isOpen, bar.opening_hours);
-    html += `<p class="hours">${status} · ${escapeHtml(bar.opening_hours)}</p>`;
+  if (p.opening_hours) {
+    const oh = p.opening_hours;
+    const isOpen = isOpenNow(oh);
+    html += `<p class="hours">${openLabel(isOpen, oh)} · ${_esc(oh)}</p>`;
   } else {
     html += `<p class="hours">🕐 Openingsuren onbekend</p>`;
   }
 
-  if (bar.phone)   html += `<p class="phone">📞 ${escapeHtml(bar.phone)}</p>`;
-  if (bar.website) {
-    const url = bar.website.startsWith('http') ? bar.website : null;
-    if (url) html += `<p class="website"><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Website →</a></p>`;
+  if (p.phone)   html += `<p class="phone">📞 ${_esc(p.phone)}</p>`;
+  if (p.website && p.website.startsWith('http')) {
+    html += `<p class="website"><a href="${_esc(p.website)}" target="_blank" rel="noopener noreferrer">Website →</a></p>`;
   }
 
   html += '</div>';
   return html;
 }
 
-function renderBuildings(buildings) {
-  buildingLayerGroup.clearLayers();
-  for (const b of buildings) {
-    const ring = b.polygon.geometry.coordinates[0].map(c => [c[1], c[0]]);
-    L.polygon(ring, { color: '#6674aa', weight: 1, fillColor: '#3a4070', fillOpacity: 0.35 })
-      .addTo(buildingLayerGroup);
-  }
-}
-
-function toggleBuildings(show) {
-  show ? buildingLayerGroup.addTo(map) : map.removeLayer(buildingLayerGroup);
-}
-
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+function _esc(s) {
+  return String(s || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }

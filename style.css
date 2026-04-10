@@ -314,27 +314,52 @@ html, body {
   text-align: center;
 }
 
-/* ─── Leaflet map overrides ────────────────────────────── */
-.leaflet-container {
-  background: #1a1d2e;
+/* ─── MapLibre overrides ───────────────────────────────── */
+.maplibregl-map {
+  font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
-/* Popup styles */
-.bar-popup .leaflet-popup-content-wrapper {
+/* Navigation controls */
+.maplibregl-ctrl-group {
+  background: var(--panel) !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,.4) !important;
+}
+
+.maplibregl-ctrl-group button {
+  background-color: transparent !important;
+  color: var(--text) !important;
+}
+
+.maplibregl-ctrl-group button:hover {
+  background-color: rgba(255,255,255,.08) !important;
+}
+
+/* Popup */
+.bar-popup .maplibregl-popup-content {
   background: var(--panel);
   color: var(--text);
   border-radius: var(--radius);
-  border: 1px solid rgba(255,255,255,.08);
-  box-shadow: 0 8px 24px rgba(0,0,0,.4);
-}
-
-.bar-popup .leaflet-popup-tip {
-  background: var(--panel);
-}
-
-.bar-popup .leaflet-popup-content {
-  margin: 0;
+  border: 1px solid rgba(255,255,255,.1);
+  box-shadow: 0 8px 32px rgba(0,0,0,.6);
+  padding: 0;
   font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.bar-popup .maplibregl-popup-tip {
+  border-top-color: var(--panel) !important;
+  border-bottom-color: var(--panel) !important;
+}
+
+.bar-popup .maplibregl-popup-close-button {
+  color: var(--muted);
+  font-size: 18px;
+  padding: 6px 10px;
+}
+
+.bar-popup .maplibregl-popup-close-button:hover {
+  color: var(--text);
+  background: transparent;
 }
 
 .popup {
@@ -387,15 +412,7 @@ html, body {
   text-decoration: none;
 }
 
-/* ─── Sunny marker glow ────────────────────────────────── */
-.marker-sunny {
-  animation: glow-pulse 2s ease-in-out infinite;
-}
-
-@keyframes glow-pulse {
-  0%, 100% { filter: drop-shadow(0 0 4px rgba(255,184,0,.6)); }
-  50%       { filter: drop-shadow(0 0 12px rgba(255,184,0,.9)); }
-}
+/* Sunny glow is animated via requestAnimationFrame in map.js */
 
 /* ─── Mobile layout ────────────────────────────────────── */
 @media (max-width: 600px) {
