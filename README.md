@@ -32,7 +32,9 @@ Elke andere statische server werkt ook (bv. `npx serve .`).
 | `js/hours.js` | OSM `opening_hours` lezen ("nu open") |
 
 ## Controle
-Er zijn geen tests. CI controleert de syntax van alle bestanden in `js/` (`node --check`) en of de JSON in
-`data/` geldig is.
+Tests zonder installatie (Node 22 of nieuwer): `node --test "test/*.test.js"`. Ze laden `js/hours.js` en
+`js/sun.js` (met SunCalc en Turf uit `vendor/`) in een `vm`-context, zoals de browser ze laadt, en gebruiken
+alleen synthetische gebouwen en tijdstippen. CI draait die tests, controleert de syntax van alle bestanden
+in `js/` (`node --check`) en of de JSON in `data/` geldig is.
 
 Zie `docs/STAND.md` voor de stand van het project.

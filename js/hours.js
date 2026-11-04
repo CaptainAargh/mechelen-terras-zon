@@ -22,48 +22,80 @@ function isOpenNow(ohString, date) {
   // "24/7"
   if (raw === '24/7') return true;
 
-  // Split on ";" to get rule segments; try each in order (last match wins, like real parsers)
-  const rules = raw.split(';').map(r => r.trim()).filter(Boolean);
+  // Split on ";" to get rule segments; try each in order (last match wins, like real parsers).
+  // A day that no rule mentions is closed (OSM semantics), but only when every rule was
+  // understood: anything we cannot parse keeps the answer at null (unknown).
+  // Some OSM values separate rules with "," after a time ("Mo-Th 16:00-01:00, Fr-Sa 15:00-02:00"):
+  // split there too, but not inside "mo,we,fr" or "09:00-12:00,13:00-18:00".
+  const rules = raw.split(/;|(?<=\d:\d{2})\s*,\s*(?=[a-z])/).map(r => r.trim()).filter(Boolean);
+  const yesterday = (dow + 6) % 7;
 
   let result = null;
+  let understood = true;
 
   for (const rule of rules) {
-    // Strip trailing modifiers like "PH off", "PH open" — skip PH rules
+    // Public-holiday rules ("PH off", "PH 10:00-14:00") are skipped: we do not know the holidays
     if (rule.startsWith('ph')) continue;
+
+    // "Mo off", "Su closed", "off"
+    const off = rule.match(/^(.*?)\s*\b(off|closed)$/);
+    if (off) {
+      const days = off[1].trim();
+      if (!isDayPart(days)) { understood = false; continue; }
+      if (matchesDay(days, dow)) result = false;
+      continue;
+    }
 
     // Separate day part from time part
     // Examples:
     //   "mo-fr 09:00-18:00"
     //   "sa-su 10:00-22:00"
     //   "mo,we,fr 08:00-12:00"
-    //   "mo-su 09:00-21:00"
+    //   "mo-fr 09:00-12:00,13:00-18:00"   (several spans)
     //   "09:00-18:00"   (no day = every day)
-    const timeMatch = rule.match(/(\d{1,2}:\d{2})\s*[-–]\s*(\d{1,2}:\d{2})/);
-    if (!timeMatch) continue;
+    const firstTime = rule.search(/\d{1,2}:\d{2}/);
+    if (firstTime < 0) { understood = false; continue; }
+    const dayPart = rule.slice(0, firstTime).trim();
+    if (!isDayPart(dayPart)) { understood = false; continue; }
 
-    const dayPart  = rule.slice(0, rule.search(/\d{1,2}:\d{2}/)).trim();
-    const openMin  = parseTime(timeMatch[1]);
-    const closeMin = parseTime(timeMatch[2]);
-    if (openMin === null || closeMin === null) continue;
-
-    // Check if today matches the day specification
-    const dayMatch = dayPart ? matchesDay(dayPart, dow) : true;
-    if (!dayMatch) continue;
-
-    // Check if current time is within range
-    // Handle overnight spans (e.g. 22:00-02:00)
-    let open;
-    if (closeMin > openMin) {
-      open = mins >= openMin && mins < closeMin;
-    } else {
-      // overnight: open if after openMin OR before closeMin
-      open = mins >= openMin || mins < closeMin;
+    const spans = [];
+    for (const m of rule.slice(firstTime).matchAll(/(\d{1,2}:\d{2})\s*[-\u2013]\s*(\d{1,2}:\d{2})/g)) {
+      const openMin  = parseTime(m[1]);
+      const closeMin = parseTime(m[2]);
+      if (openMin !== null && closeMin !== null) spans.push([openMin, closeMin]);
     }
+    if (!spans.length) { understood = false; continue; }
 
-    result = open;
+    // Overnight spans (e.g. 22:00-02:00) run into the next day: the part after
+    // midnight belongs to the day the span started on.
+    const inToday = spans.some(([o, c]) => (c > o ? mins >= o && mins < c : mins >= o));
+    const inYesterdaysNight = matchesDay(dayPart, yesterday)
+      && spans.some(([o, c]) => c <= o && mins < c);
+
+    if (matchesDay(dayPart, dow)) {
+      result = inToday || inYesterdaysNight;
+    } else if (inYesterdaysNight) {
+      result = true;
+    }
   }
 
+  if (result === null && understood && rules.some(r => !r.startsWith('ph'))) return false;
   return result;
+}
+
+/**
+ * Is the day part made only of day abbreviations, ranges and lists we understand?
+ * ("", "mo", "mo-fr", "mo,we,fr", "sa-su"; not "apr-oct: mo-su" or "sunrise")
+ */
+function isDayPart(dayPart) {
+  const dp = dayPart.replace(/[:\s]+$/, '').trim();
+  if (!dp) return true;
+  return dp.split(',').every(seg => {
+    const s = seg.trim();
+    const range = s.match(/^([a-z]{2})\s*[-\u2013]\s*([a-z]{2})$/);
+    if (range) return DAY_ABBR[range[1]] !== undefined && DAY_ABBR[range[2]] !== undefined;
+    return DAY_ABBR[s] !== undefined;
+  });
 }
 
 function parseTime(str) {

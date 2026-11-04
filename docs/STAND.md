@@ -8,8 +8,8 @@ zonnekompas, schaduwlaag en weer (Open-Meteo). Zie `README.md`.
 ## Bouwt het / tests
 - Geen build-stap en geen `package.json`. Lokaal gestart met `python -m http.server`: `index.html`, `js/`,
   `data/` en `vendor/` worden geserveerd (HTTP 200). Niet in een browser bekeken in deze ronde.
-- Geen tests. CI (nieuw) doet als rooktest `node --check` op `js/*.js` en valideert de JSON in `data/`: beide
-  groen lokaal.
+- Tests: `node --test "test/*.test.js"` (openingsuren en zon/schaduw, geen installatie). CI doet daarnaast
+  `node --check` op `js/*.js` en valideert de JSON in `data/`.
 - Er was geen README; die is toegevoegd.
 
 ## Starten: configuratie
