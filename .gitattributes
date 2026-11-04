@@ -1,0 +1,16 @@
+* text=auto eol=lf
+
+# Binaire bestanden: nooit regeleinden omzetten of diffen als tekst
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.parquet binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
