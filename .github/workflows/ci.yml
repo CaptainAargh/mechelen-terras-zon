@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths: ["js/**", "data/**", "index.html", ".github/workflows/ci.yml"]
+  pull_request:
+    paths: ["js/**", "data/**", "index.html", ".github/workflows/ci.yml"]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Geen package.json en geen install: statische site, bibliotheken staan in vendor/.
+      - name: Lint (syntaxcontrole js/)
+        run: for f in js/*.js; do node --check "$f"; done
+      - name: Test (data/*.json is geldige JSON)
+        run: for f in data/*.json; do node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" "$f"; done
