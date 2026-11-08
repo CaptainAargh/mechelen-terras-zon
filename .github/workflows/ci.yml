@@ -3,9 +3,9 @@ name: CI
 on:
   push:
     branches: [main]
-    paths: ["js/**", "data/**", "index.html", ".github/workflows/ci.yml"]
+    paths: ["js/**", "data/**", "test/**", "vendor/**", "index.html", ".github/workflows/ci.yml"]
   pull_request:
-    paths: ["js/**", "data/**", "index.html", ".github/workflows/ci.yml"]
+    paths: ["js/**", "data/**", "test/**", "vendor/**", "index.html", ".github/workflows/ci.yml"]
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -26,5 +26,7 @@ jobs:
       # Geen package.json en geen install: statische site, bibliotheken staan in vendor/.
       - name: Lint (syntaxcontrole js/)
         run: for f in js/*.js; do node --check "$f"; done
+      - name: Test (openingsuren en zon/schaduw)
+        run: node --test "test/*.test.js"
       - name: Test (data/*.json is geldige JSON)
         run: for f in data/*.json; do node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" "$f"; done
